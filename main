@@ -1,7 +1,7 @@
 from http.server import  HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
 import socketserver
+import json
 import bytes
-from io import BytesIO
 
 class ResponseMessage:
     def __init__(self, weightedAnimalsDictionary):
@@ -26,9 +26,12 @@ class ResponseMessage:
 class ServerHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
-      content_len = int(self.headers['Content-Length'])
-      post_body = self.rfile.read(content_len)
-      print (post_body)
+      contentLen = int(self.headers['Content-Length'])
+      postBody = self.rfile.read(contentLen)
+      print (self.convertPostMessageToDicttionary(postBody))
+
+    def convertPostMessageToDicttionary(self, postBody):
+        return json.loads(postBody.decode('utf8').replace("\\'", '"'))[0]
 
 
 def runServer(path, port, handler=ServerHandler):
