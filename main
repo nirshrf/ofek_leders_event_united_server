@@ -1,0 +1,60 @@
+from PIL import Image
+from http.server import  HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
+import socketserver
+import requests
+import bytes
+from io import BytesIO
+
+class httpServer(SimpleHTTPRequestHandler):
+
+
+    def do_POST(self):
+        content_length = int(self.headers['Content-Length'])
+        post_data = self.rfile.read(content_length)
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(ResponseMessage(post_data).getResponse())
+
+    def runServer(self, path , port, handler):
+        server_address = (path, port)
+        httpd = socketserver.TCPServer(server_address, handler)
+        httpd.serve_forever()
+
+
+
+class ResponseMessage:
+    def __init__(self, weightedAnimalsDictionary):
+        self.animalsDictionary = weightedAnimalsDictionary
+        self.response = ""
+
+    def __repr__(self):
+        return self.animalsDictionary.__repr__()
+
+    def makeDecisionBasdOnDictionary(self):
+        decision = ""
+        grade = 0
+        for pair in self.animalsDictionary.items():
+            if grade < pair[1]:
+                self.response = pair[0]
+        self.response = decision
+
+    def getResponse(self):
+        return self.response
+
+
+class ServerHandler(SimpleHTTPRequestHandler):
+
+    def do_POST(self):
+      content_len = int(self.headers['Content-Length'])
+      post_body = self.rfile.read(content_len)
+      print (post_body)
+
+if __name__ == '__main__':
+    PORT = 8080
+    Handler = ServerHandler
+
+    httpd = socketserver.TCPServer(("", PORT), Handler)
+
+    print("serving at port", PORT)
+    httpd.serve_forever()
+
