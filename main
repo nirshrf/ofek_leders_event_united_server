@@ -1,26 +1,7 @@
-from PIL import Image
 from http.server import  HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
 import socketserver
-import requests
 import bytes
 from io import BytesIO
-
-class httpServer(SimpleHTTPRequestHandler):
-
-
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(ResponseMessage(post_data).getResponse())
-
-    def runServer(self, path , port, handler):
-        server_address = (path, port)
-        httpd = socketserver.TCPServer(server_address, handler)
-        httpd.serve_forever()
-
-
 
 class ResponseMessage:
     def __init__(self, weightedAnimalsDictionary):
@@ -49,12 +30,12 @@ class ServerHandler(SimpleHTTPRequestHandler):
       post_body = self.rfile.read(content_len)
       print (post_body)
 
-if __name__ == '__main__':
-    PORT = 8080
-    Handler = ServerHandler
 
-    httpd = socketserver.TCPServer(("", PORT), Handler)
-
-    print("serving at port", PORT)
+def runServer(path, port, handler=ServerHandler):
+    httpd = socketserver.TCPServer((path, port), handler)
+    print("serving at port", port)
     httpd.serve_forever()
+
+if __name__ == '__main__':
+    runServer("",8080,ServerHandler)
 
