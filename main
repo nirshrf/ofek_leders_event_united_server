@@ -1,4 +1,4 @@
-from http.server import  HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
+from http.server import  SimpleHTTPRequestHandler
 import socketserver
 import json
 import bytes
@@ -23,16 +23,34 @@ class ResponseMessage:
         return self.response
 
 
+class Coordinate:
+    def __init__(self, longitude, latitude):
+        self.longitude = longitude
+        self.latitude = latitude
+
+    def __repr__(self):
+        return "Longitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude)
+
+    def __str__(self):
+        return "Longitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude)
+
 class ServerHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
       contentLen = int(self.headers['Content-Length'])
       postBody = self.rfile.read(contentLen)
-      print (self.convertPostMessageToDicttionary(postBody))
+      print (self.parseToCoordinates(postBody))
 
-    def convertPostMessageToDicttionary(self, postBody):
-        return json.loads(postBody.decode('utf8').replace("\\'", '"'))[0]
+    def convertPostMessageToDictionary(self, postBody):
+        return json.loads(postBody)
 
+    def parseToCoordinates(self, postBody):
+        listOfCoordinates = []
+        coordinatesList = self.convertPostMessageToDictionary(postBody)
+        print(coordinatesList['coordinates'])
+        listOfCoordinates = [Coordinate(*pair) for pair in coordinatesList['coordinates']]
+        print(listOfCoordinates[0])
+        return listOfCoordinates
 
 def runServer(path, port, handler=ServerHandler):
     httpd = socketserver.TCPServer((path, port), handler)
