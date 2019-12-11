@@ -1,26 +1,8 @@
 from http.server import  SimpleHTTPRequestHandler
 import socketserver
 import json
+import requests
 import bytes
-
-class ResponseMessage:
-    def __init__(self, weightedAnimalsDictionary):
-        self.animalsDictionary = weightedAnimalsDictionary
-        self.response = ""
-
-    def __repr__(self):
-        return self.animalsDictionary.__repr__()
-
-    def makeDecisionBasdOnDictionary(self):
-        decision = ""
-        grade = 0
-        for pair in self.animalsDictionary.items():
-            if grade < pair[1]:
-                self.response = pair[0]
-        self.response = decision
-
-    def getResponse(self):
-        return self.response
 
 
 class Coordinate:
@@ -45,21 +27,28 @@ class ServerHandler(SimpleHTTPRequestHandler):
         return json.loads(postBody)
 
     def parseToCoordinates(self, postBody):
-        listOfCoordinates = list()
         coordinatesDictionary = self.convertPostMessageToDictionary(postBody)
-        listOfCoordinates = [Coordinate(*pair) for pair in coordinatesDictionary['coordinates']]
-        return listOfCoordinates
+        if self.validateMoreThanOneAnimalPassed(coordinatesDictionary) > 1:
+            return [Coordinate(*pair) for pair in coordinatesDictionary['coordinates']]
+        return coordinatesDictionary['coordinates']
 
+    def validateMoreThanOneAnimalPassed(self, coordinatesDictionary):
+        return len(coordinatesDictionary['coordinates']) > 1
 
 class animalsFromMap:
-    def __init__(self, coordinateList):
-        self.coordinateList = coordinateList
+    def __init__(self, coordinates, url):
+        self.coordinates = coordinates
+        self.url = url
+        self.isList = len(self.coordinates) > 1
 
     def get(self):
-        return [self.getAnimalFromDB(coordinate) for coordinate in self.coordinateList]
+        if self.isList:
+            return [self.getAnimalFromDB(coordinate) for coordinate in self.coordinates]
+        return self.getAnimalFromDB(self.coordinates)
 
-    def getAnimalFromDB(self, coordinate):
+    def getAnimalFromDB(self ,coordinate):
         #Get animal from DB with coordinate
+        requests.get(self.url)
         pass
 
 def runServer(path, port, handler=ServerHandler):
