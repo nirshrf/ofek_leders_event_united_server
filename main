@@ -45,12 +45,22 @@ class ServerHandler(SimpleHTTPRequestHandler):
         return json.loads(postBody)
 
     def parseToCoordinates(self, postBody):
-        listOfCoordinates = []
-        coordinatesList = self.convertPostMessageToDictionary(postBody)
-        print(coordinatesList['coordinates'])
-        listOfCoordinates = [Coordinate(*pair) for pair in coordinatesList['coordinates']]
-        print(listOfCoordinates[0])
+        listOfCoordinates = list()
+        coordinatesDictionary = self.convertPostMessageToDictionary(postBody)
+        listOfCoordinates = [Coordinate(*pair) for pair in coordinatesDictionary['coordinates']]
         return listOfCoordinates
+
+
+class animalsFromMap:
+    def __init__(self, coordinateList):
+        self.coordinateList = coordinateList
+
+    def get(self):
+        return [self.getAnimalFromDB(coordinate) for coordinate in self.coordinateList]
+
+    def getAnimalFromDB(self, coordinate):
+        #Get animal from DB with coordinate
+        pass
 
 def runServer(path, port, handler=ServerHandler):
     httpd = socketserver.TCPServer((path, port), handler)
