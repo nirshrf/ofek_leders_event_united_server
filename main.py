@@ -2,6 +2,7 @@ from http.server import  SimpleHTTPRequestHandler
 import socketserver
 import json
 import requests
+from .Entities import *
 import bytes
 
 
@@ -19,12 +20,12 @@ class Coordinate:
 class ServerHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
-        serviceUrl = "127.0.0.1:9000/graphql"
+        serviceUrl = "http://localhost:9000/graphql"
         contentLen = int(self.headers['Content-Length'])
         postBody = self.rfile.read(contentLen)
-        print (self.parseToCoordinates(postBody))
-        animalsHandler = AnimalsFromMap(self.parseToCoordinates(postBody),serviceUrl)
-        print(animalsHandler.get())
+        coordinates = self.parseToCoordinates(postBody)
+        requestHandler = GraphQLRequests(serviceUrl)
+        print(requestHandler.importAdopters())
 
 
     def convertPostMessageToDictionary(self, postBody):
@@ -52,10 +53,23 @@ class AnimalsFromMap:
 
     def getAnimalFromDB(self ,coordinate):
         #Get animal from DB with coordinate
-        return requests.post("http://localhost:9000/graphql",json = {"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
+        return requests.post(self.url ,json = {"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
 
 class GraphQLRequests:
-    pass
+    def __init__(self, url):
+        self.url = url
+
+    def importAdopters(self):
+        requestData = requests.post(self.url,json = {"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
+        return self.parseAdoptersFromJson(requestData)
+
+    def parseAdoptersFromJson(self,JSON):
+        if self.validateMoreThanOneAdopter(JSON) > 1:
+            return [Adopter(*adopter) for adopter in JSON['data']['adopters']]
+        return JSON['data']['adopters']
+
+    def validateMoreThanOneAdopter(self,adoptersDictionary):
+        return len(adoptersDictionary['data']['adopters']) > 1
 
 
 def runServer(path, port, handler=ServerHandler):
