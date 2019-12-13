@@ -19,9 +19,13 @@ class Coordinate:
 class ServerHandler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
-      contentLen = int(self.headers['Content-Length'])
-      postBody = self.rfile.read(contentLen)
-      print (self.parseToCoordinates(postBody))
+        serviceUrl = "127.0.0.1:9000/graphql"
+        contentLen = int(self.headers['Content-Length'])
+        postBody = self.rfile.read(contentLen)
+        print (self.parseToCoordinates(postBody))
+        animalsHandler = AnimalsFromMap(self.parseToCoordinates(postBody),serviceUrl)
+        print(animalsHandler.get())
+
 
     def convertPostMessageToDictionary(self, postBody):
         return json.loads(postBody)
@@ -35,7 +39,7 @@ class ServerHandler(SimpleHTTPRequestHandler):
     def validateMoreThanOneAnimalPassed(self, coordinatesDictionary):
         return len(coordinatesDictionary['coordinates']) > 1
 
-class animalsFromMap:
+class AnimalsFromMap:
     def __init__(self, coordinates, url):
         self.coordinates = coordinates
         self.url = url
@@ -48,8 +52,11 @@ class animalsFromMap:
 
     def getAnimalFromDB(self ,coordinate):
         #Get animal from DB with coordinate
-        requests.get(self.url)
-        pass
+        return requests.post("http://localhost:9000/graphql",json = {"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
+
+class GraphQLRequests:
+    pass
+
 
 def runServer(path, port, handler=ServerHandler):
     httpd = socketserver.TCPServer((path, port), handler)
