@@ -1,21 +1,9 @@
 from http.server import  SimpleHTTPRequestHandler
 import socketserver
 import json
-import requests
-from .Entities import *
+from graphqlHandler import *
 import bytes
 
-
-class Coordinate:
-    def __init__(self, longitude, latitude):
-        self.longitude = longitude
-        self.latitude = latitude
-
-    def __repr__(self):
-        return "Longitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude)
-
-    def __str__(self):
-        return "Longitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude)
 
 class ServerHandler(SimpleHTTPRequestHandler):
 
@@ -24,6 +12,7 @@ class ServerHandler(SimpleHTTPRequestHandler):
         contentLen = int(self.headers['Content-Length'])
         postBody = self.rfile.read(contentLen)
         coordinates = self.parseToCoordinates(postBody)
+        print(coordinates)
         requestHandler = GraphQLRequests(serviceUrl)
         print(requestHandler.importAdopters())
 
@@ -33,12 +22,12 @@ class ServerHandler(SimpleHTTPRequestHandler):
 
     def parseToCoordinates(self, postBody):
         coordinatesDictionary = self.convertPostMessageToDictionary(postBody)
-        if self.validateMoreThanOneAnimalPassed(coordinatesDictionary) > 1:
+        if self.validateMoreThanOneAnimalPassed(coordinatesDictionary):
             return [Coordinate(*pair) for pair in coordinatesDictionary['coordinates']]
-        return coordinatesDictionary['coordinates']
+        return Coordinate(*coordinatesDictionary['coordinates'])
 
     def validateMoreThanOneAnimalPassed(self, coordinatesDictionary):
-        return len(coordinatesDictionary['coordinates']) > 1
+        return isinstance(coordinatesDictionary['coordinates'][0], list)
 
 class AnimalsFromMap:
     def __init__(self, coordinates, url):
@@ -51,26 +40,9 @@ class AnimalsFromMap:
             return [self.getAnimalFromDB(coordinate) for coordinate in self.coordinates]
         return self.getAnimalFromDB(self.coordinates)
 
-    def getAnimalFromDB(self ,coordinate):
+    def getAnimalFromDB(self, coordinate):
         #Get animal from DB with coordinate
-        return requests.post(self.url ,json = {"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
-
-class GraphQLRequests:
-    def __init__(self, url):
-        self.url = url
-
-    def importAdopters(self):
-        requestData = requests.post(self.url,json = {"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
-        return self.parseAdoptersFromJson(requestData)
-
-    def parseAdoptersFromJson(self,JSON):
-        if self.validateMoreThanOneAdopter(JSON) > 1:
-            return [Adopter(*adopter) for adopter in JSON['data']['adopters']]
-        return JSON['data']['adopters']
-
-    def validateMoreThanOneAdopter(self,adoptersDictionary):
-        return len(adoptersDictionary['data']['adopters']) > 1
-
+        return requests.post(self.url, json={"query": '{adopters{id, name, prefered, secondpreffered}}'}).json()
 
 def runServer(path, port, handler=ServerHandler):
     httpd = socketserver.TCPServer((path, port), handler)
@@ -78,5 +50,5 @@ def runServer(path, port, handler=ServerHandler):
     httpd.serve_forever()
 
 if __name__ == '__main__':
-    runServer("",8080,ServerHandler)
+    runServer("", 8080, ServerHandler)
 

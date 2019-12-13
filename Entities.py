@@ -1,6 +1,4 @@
-
 #Module: Entities.py
-
 
 class Adopter:
 
@@ -11,8 +9,21 @@ class Adopter:
         self.secondpreferred = secondpreferred
 
     def __str__(self):
-        return "id : " + self.id + "name : " + self.name + "preferred : " + self.preferred + "Second Preferred : " + self.secondpreferred
+        return "\nid : " + self.id + "\nname : " + self.name + "\npreferred : " + self.preferred + "\nSecond Preferred : " + self.secondpreferred + "\n"
 
     def __repr__(self):
-        return "id : " + self.id + "name : " + self.name + "preferred : " + self.preferred + "Second Preferred : " + self.secondpreferred
+        return "\nid : " + self.id + "\nname : " + self.name + "\npreferred : " + self.preferred + "\nSecond Preferred : " + self.secondpreferred + "\n"
+
+
+class Coordinate:
+    def __init__(self, longitude, latitude):
+        self.longitude = longitude
+        self.latitude = latitude
+
+    def __repr__(self):
+        return "\nLongitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude) + "\n"
+
+    def __str__(self):
+        return "\nLongitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude) + "\n"
+
 
