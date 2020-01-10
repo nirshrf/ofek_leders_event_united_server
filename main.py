@@ -17,6 +17,8 @@ class ServerHandler(SimpleHTTPRequestHandler):
         service_url = "http://localhost:9000/graphql"
         request_handler = GraphQLRequests(service_url)
         print(request_handler.import_adopters())
+        print(request_handler.import_quads())
+        print(request_handler.import_gridcell(1, 1))
 
     def convert_post_message_to_dictionary(self, data):
         return json.loads(data)
