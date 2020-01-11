@@ -24,10 +24,6 @@ class ServerHandler(SimpleHTTPRequestHandler):
         print(request_handler.import_AI_status())
 
 
-    def validate_more_than_one_animal_passed(self, coordinates_dictionary):
-        return isinstance(coordinates_dictionary['coordinates'][0], list)
-
-
 def run_server(path, port, handler=ServerHandler):
     httpd = socketserver.TCPServer((path, port), handler)
     print("serving at port", port)
