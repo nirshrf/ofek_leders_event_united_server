@@ -19,6 +19,10 @@ class ServerHandler(SimpleHTTPRequestHandler):
         print(request_handler.import_adopters())
         print(request_handler.import_quads())
         print(request_handler.import_gridcell(1, 1))
+        print(request_handler.import_events(True))
+        print(request_handler.import_adoptionStatus())
+        print(request_handler.import_adoptees(1))
+        print(request_handler.import_AI_status())
 
     def convert_post_message_to_dictionary(self, data):
         return json.loads(data)
