@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9f8b0486-36a7-4947-a76d-cf37ece529d1" name="Default" comment="finished all queries">
+    <list default="true" id="9f8b0486-36a7-4947-a76d-cf37ece529d1" name="Default" comment="removed old and not used code">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -179,7 +179,21 @@
       <option name="project" value="LOCAL" />
       <updated>1578758093526</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="removed old and not used code">
+      <created>1578758582212</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1578758582212</updated>
+    </task>
+    <task id="LOCAL-00008" summary="removed old and not used code">
+      <created>1578758603700</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1578758603700</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -209,33 +223,34 @@
     <MESSAGE value="refactoring and deleting AnimalsfromMap due to not used" />
     <MESSAGE value="added queries and parsed to compatible entity" />
     <MESSAGE value="finished all queries" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished all queries" />
+    <MESSAGE value="removed old and not used code" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed old and not used code" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="423" y="0" key="CommitChangelistDialog2" timestamp="1578758581147">
+    <state x="423" y="0" key="CommitChangelistDialog2" timestamp="1578758602598">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="423" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1578758581147" />
+    <state x="423" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1578758602598" />
     <state x="551" y="169" key="FileChooserDialogImpl" timestamp="1576250427032">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="551" y="169" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1576250427032" />
-    <state width="1515" height="203" key="GridCell.Tab.0.bottom" timestamp="1578758526549">
+    <state width="1515" height="203" key="GridCell.Tab.0.bottom" timestamp="1578758665424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="203" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1578758526549" />
-    <state width="1515" height="203" key="GridCell.Tab.0.center" timestamp="1578758526548">
+    <state width="1515" height="203" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1578758665424" />
+    <state width="1515" height="203" key="GridCell.Tab.0.center" timestamp="1578758665424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="203" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1578758526548" />
-    <state width="1515" height="203" key="GridCell.Tab.0.left" timestamp="1578758526548">
+    <state width="1515" height="203" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1578758665424" />
+    <state width="1515" height="203" key="GridCell.Tab.0.left" timestamp="1578758665424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="203" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1578758526548" />
-    <state width="1515" height="203" key="GridCell.Tab.0.right" timestamp="1578758526548">
+    <state width="1515" height="203" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1578758665424" />
+    <state width="1515" height="203" key="GridCell.Tab.0.right" timestamp="1578758665424">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="203" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1578758526548" />
+    <state width="1515" height="203" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1578758665424" />
     <state x="254" y="58" width="1106" height="707" key="SettingsEditor" timestamp="1576266628304">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
