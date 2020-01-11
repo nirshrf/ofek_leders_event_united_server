@@ -1,5 +1,5 @@
 import requests
-from Entities import Coordinate, Adopter, Quadcopter, GridCell, EventStatus, Event, PetType, AdoptionStatus, Adoptee, AiStatus
+from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary
 
 
 class GraphQLRequests:
@@ -7,7 +7,7 @@ class GraphQLRequests:
         self.url = url
 
     def import_adopters(self):
-        request_data = requests.post(self.url, json={"query": '{adopters{id, name, preferred{id, code, description}, secondpreferred{id, code, description}}}'}).json()
+        request_data = requests.post(self.url, json={"query": '{adopters'+JSON_dictionary["Adopter"]+'}'}).json()
         return self.parse_adopters_from_json(request_data)
 
     def parse_adopters_from_json(self, query_response):
@@ -19,7 +19,7 @@ class GraphQLRequests:
         return len(adopters_dictionary['data']['adopters']) > 1
 
     def import_quads(self):
-        request_data = requests.post(self.url, json={"query": '{allQuadcopters{id, name, launchtime, isfree, x, y}}'}).json()
+        request_data = requests.post(self.url, json={"query": '{allQuadcopters'+JSON_dictionary["Quadcopter"]+'}'}).json()
         return self.parse_quads_from_json(request_data)
 
     def parse_quads_from_json(self, query_response):
@@ -31,7 +31,7 @@ class GraphQLRequests:
         return len(quads_dictionary['data']['allQuadcopters']) > 1
 
     def import_gridcell(self, x, y):
-        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+'){id, x, y, lastPictureUrl, history{id, petType{id, code, description},amount}}}'
+        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+JSON_dictionary["GridCell"]+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_gridcell_from_json(request_data)
 
@@ -39,9 +39,7 @@ class GraphQLRequests:
         return GridCell(*query_response['data']['mapData'].values())
 
     def import_events(self, isOpen):
-        json_quadcopter = '{id, name, launchtime, isfree, x, y}'
-        json_eventStatus = '{id, code, description}'
-        json_body = '{openEvents(isOpen:'+str(isOpen).lower()+'){id, quadcopter' + json_quadcopter + ', x, y, eventTime, eventStatus'+json_eventStatus+'}}'
+        json_body = '{openEvents(isOpen:'+str(isOpen).lower()+')'+JSON_dictionary["Event"]+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_events_from_json(request_data)
 
@@ -54,8 +52,7 @@ class GraphQLRequests:
         return len(events_dictionary['data']['openEvents']) > 1
 
     def import_adoptionStatus(self):
-        json_adoptionStatus = '{id, code, description}'
-        json_body = '{allAdoptionStatus' + json_adoptionStatus + '}'
+        json_body = '{allAdoptionStatus' + JSON_dictionary["AdoptionStatus"] + '}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_adoptionstatus_from_json(request_data)
 
@@ -68,9 +65,7 @@ class GraphQLRequests:
         return len(adoption_status_dictionary['data']['allAdoptionStatus']) > 1
 
     def import_adoptees(self, adoption_status_code):
-        json_adoptionStatus = 'adoptionStatus{id, code, description}'
-        json_petType = 'petType{id, code, description}'
-        json_body = '{allAdoptees(adoptionStatusCode:' + str(adoption_status_code) + '){id,' + json_petType + ', x, y, imageBeforeURL, imageAfterURL,' + json_adoptionStatus+'}}'
+        json_body = '{allAdoptees(adoptionStatusCode:'+str(adoption_status_code)+')'+JSON_dictionary["Adoptee"]+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_adoptees_from_json(request_data)
 
@@ -83,8 +78,7 @@ class GraphQLRequests:
         return len(adoptee_dictionary['data']['allAdoptees']) > 1
 
     def import_AI_status(self):
-        json_body = '{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}'
-        request_data = requests.post(self.url, json={"query": json_body}).json()
+        request_data = requests.post(self.url, json={"query": JSON_dictionary['AiStatus']}).json()
         return self.parse_status_from_json(request_data)
 
     def parse_status_from_json(self, query_response):

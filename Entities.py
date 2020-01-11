@@ -1,5 +1,17 @@
 # Module: Entities.py
 
+JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
+                       PetType='{id, code, description}',
+                       EventStatus='{id, code, description}',
+                       Coordinate='{longitude, latitude}',
+                       AdoptionStatus='{id, code, description}',
+                       History='{id, petType{id, code, description}, amount}',
+                       GridCell='{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}',
+                       Adopter='{id, name, preferred{id, code, description}, secondpreferred{id, code, description}}',
+                       Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, x, y, eventTime, eventStatus{id, code, description}}',
+                       Adoptee='{id, petType{id, code, description}, x, y, imageBeforeURL, imageAfterURL, adoptionStatus{id, code, description}}',
+                       AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}')
+
 
 class Adopter:
     def __init__(self, id=None, name=None, preferred=None, secondpreferred=None):
