@@ -10,7 +10,8 @@ JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
                        Adopter='{id, name, preferred{id, code, description}, secondpreferred{id, code, description}}',
                        Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, x, y, eventTime, eventStatus{id, code, description}}',
                        Adoptee='{id, petType{id, code, description}, x, y, imageBeforeURL, imageAfterURL, adoptionStatus{id, code, description}}',
-                       AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}')
+                       AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}',
+                       Plot='{gridCellId, timestamp, x, y, z}')
 
 
 class Adopter:
@@ -169,3 +170,21 @@ class AiStatus:
 
     def __str__(self):
         return "AiStatus{" + "\ndrone_AI : " + str(self.drone_AI) + "\npets_AI : " + str(self.pets_AI) + "\nadoption_AI : " + str(self.adoption_AI) + "\nbda_AI : " + str(self.bda_AI) + "}\n"
+
+
+class Plot:
+    def __init__(self,gridCellId, timestamp, x, y, z):
+        self.gridCellId = gridCellId
+        self.timestamp = timestamp
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def to_tuple(self):
+        return self.gridCellId, self.timestamp, self.x, self.y, self.z
+
+    def __repr__(self):
+        return "Plot{" + "\nId : " + str(self.gridCellId) + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
+
+    def __str__(self):
+        return "Plot{" + "\nId : " + str(self.gridCellId) + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"

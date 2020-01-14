@@ -1,5 +1,6 @@
 import requests
-from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary
+import graphene
+from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary, Plot
 
 
 class GraphQLRequests:
@@ -83,3 +84,19 @@ class GraphQLRequests:
 
     def parse_status_from_json(self, query_response):
         return AiStatus(*query_response['data'].values())
+
+
+class GraphQlMutation:
+
+    def __init__(self, url):
+        self.url = url
+
+    def set_plot(self, plot):
+        request_data = requests.post(self.url, json={"query": "mutation setPlot "+'{setPlot(gridCellId: %d,timestamp: \"%s\",x: %d,y: %d,z: %d)' % plot.to_tuple() +
+                                                                                    JSON_dictionary['Plot'] +
+                                                                                    '}'}).json()
+
+        return self.parse_from_json(request_data)
+
+    def parse_from_json(self, query_response):
+        return Plot(*query_response['data']['setPlot'].values())
