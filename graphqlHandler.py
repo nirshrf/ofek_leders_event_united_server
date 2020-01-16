@@ -1,6 +1,6 @@
 import requests
 import graphene
-from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary, Plot
+from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary, Plot, PetType
 
 
 class GraphQLRequests:
@@ -78,12 +78,23 @@ class GraphQLRequests:
     def validate_more_than_one_adoptee(self, adoptee_dictionary):
         return len(adoptee_dictionary['data']['allAdoptees']) > 1
 
+    def import_pet_types(self):
+        json_body = '{allPetTypes'+JSON_dictionary["PetType"]+'}'
+        request_data = requests.post(self.url, json={"query": json_body}).json()
+        return self.parse_pet_types_from_json(request_data)
+
+    def parse_pet_types_from_json(self, query_response):
+        return [PetType(*petType) for petType in query_response['data']['allPetTypes']]
+
+
+'''
     def import_AI_status(self):
         request_data = requests.post(self.url, json={"query": JSON_dictionary['AiStatus']}).json()
         return self.parse_status_from_json(request_data)
 
     def parse_status_from_json(self, query_response):
         return AiStatus(*query_response['data'].values())
+'''
 
 
 class GraphQlMutation:
@@ -92,7 +103,7 @@ class GraphQlMutation:
         self.url = url
 
     def set_plot(self, plot):
-        request_data = requests.post(self.url, json={"query": "mutation setPlot "+'{setPlot(gridCellId: %d,timestamp: \"%s\",x: %d,y: %d,z: %d)' % plot.to_tuple() +
+        request_data = requests.post(self.url, json={"query": "mutation setPlot "+'{setPlot(timestamp: \"%s\",x: %d,y: %d,z: %d)' % plot.to_tuple() +
                                                                                     JSON_dictionary['Plot'] +
                                                                                     '}'}).json()
 
