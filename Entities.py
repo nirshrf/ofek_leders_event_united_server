@@ -11,7 +11,7 @@ JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
                        Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, x, y, eventTime, eventStatus{id, code, description}}',
                        Adoptee='{id, petType{id, code, description}, x, y, imageBeforeURL, imageAfterURL, adoptionStatus{id, code, description}}',
                        AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}',
-                       Plot='{gridCellId, timestamp, x, y, z}')
+                       Plot='{timestamp, x, y, z}')
 
 
 class Adopter:
@@ -74,7 +74,10 @@ class PetType:
 class History:
     def __init__(self, id, petType, amount):
         self.id = id
-        self.petType = PetType(*petType.values())
+        if type(petType) == PetType:
+            self.petType = petType
+        else:
+            self.petType = PetType(*petType.values())
         self.amount = amount
 
     def __repr__(self):
@@ -90,7 +93,10 @@ class GridCell:
         self.x = x
         self.y = y
         self.lastPictureUrl = lastPictureUrl
-        self.history = [History(*h.values()) for h in history]
+        if type(history[0]) == History:
+            self.history = history
+        else:
+            self.history = [History(*h.values()) for h in history]
 
     def __repr__(self):
         return "GridCell{" + "\nX : " + str(self.x) + "\nY : " + str(self.y) + "\nHistory : " + str(self.history) + "}\n"
@@ -115,11 +121,17 @@ class EventStatus:
 class Event:
     def __init__(self, id, quadcopter, x, y, eventTime, eventStatus):
         self.id = id
-        self.quadcopter = Quadcopter(*quadcopter.values())
+        if type(quadcopter) == Quadcopter:
+            self.quadcopter = quadcopter
+        else:
+            self.quadcopter = Quadcopter(*quadcopter.values())
         self.x = x
         self.y = y
         self.eventTime = eventTime
-        self.eventStatus = EventStatus(*eventStatus.values())
+        if type(eventStatus) == EventStatus:
+            self.eventStatus = eventStatus
+        else:
+            self.eventStatus = EventStatus(*eventStatus.values())
 
     def __repr__(self):
         return "Event{" + "\nId : " + str(self.id) + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.eventStatus) + "}\n"
@@ -144,12 +156,18 @@ class AdoptionStatus:
 class Adoptee:
     def __init__(self, id, petType, x, y, imageBeforeURL, imageAfterURL, adoptionStatus):
         self.id = id
-        self.petType = PetType(*petType.values())
+        if type(petType) == PetType:
+            self.petType = petType
+        else:
+            self.petType = PetType(*petType.values())
         self.x = x
         self.y = y
         self.imageBeforeURL = imageBeforeURL
         self.imageAfterURL = imageAfterURL
-        self.adoptionStatus = AdoptionStatus(*adoptionStatus.values())
+        if type(adoptionStatus) == AdoptionStatus:
+            self.adoptionStatus = adoptionStatus
+        else:
+            self.adoptionStatus = AdoptionStatus(*adoptionStatus.values())
 
     def __repr__(self):
         return "Adoptee{" + "\nId : " + str(self.id) + "\nPet Type : " + str(self.petType) + "\nAdoption Status : " + str(self.adoptionStatus) + "}\n"
@@ -173,18 +191,42 @@ class AiStatus:
 
 
 class Plot:
-    def __init__(self,gridCellId, timestamp, x, y, z):
-        self.gridCellId = gridCellId
+    def __init__(self, timestamp, x, y, z):
         self.timestamp = timestamp
         self.x = x
         self.y = y
         self.z = z
 
     def to_tuple(self):
-        return self.gridCellId, self.timestamp, self.x, self.y, self.z
+        return self.timestamp, self.x, self.y, self.z
 
     def __repr__(self):
-        return "Plot{" + "\nId : " + str(self.gridCellId) + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
+        return "Plot{" + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
 
     def __str__(self):
-        return "Plot{" + "\nId : " + str(self.gridCellId) + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
+        return "Plot{" + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
+
+
+class Heatmap:
+    def __init__(self, dog_percentage, cat_percentage, rabbit_percentage, parrot_percentage):
+        self.dog_percentage = dog_percentage
+        self.cat_percentage = cat_percentage
+        self.rabbit_percentage = rabbit_percentage
+        self.parrot_percentage = parrot_percentage
+
+    def to_tuple(self):
+        return self.dog_percentage, self.cat_percentage, self.rabbit_percentage, self.parrot_percentage
+
+    def to_dictionary(self):
+        return dict(dog=self.dog_percentage,
+                    cat=self.cat_percentage,
+                    rabbit=self.rabbit_percentage,
+                    parrot=self.parrot_percentage)
+
+    def __repr__(self):
+        return "Heatmap{" + "\nDog : " + str(self.dog_percentage) + "\nCat : " + str(self.cat_percentage) + "\nRabbit : " + str(self.rabbit_percentage) + "\nParrot : " + str(self.parrot_percentage) + "}\n"
+
+    def __str__(self):
+        return "Heatmap{" + "\nDog : " + str(self.dog_percentage) + "\nCat : " + str(self.cat_percentage) + "\nRabbit : " + str(self.rabbit_percentage) + "\nParrot : " + str(self.parrot_percentage) + "}\n"
+
+
