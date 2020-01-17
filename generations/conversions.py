@@ -2,7 +2,7 @@ from generations.generateHeatmap import generate_heat_map
 from generations.generateAnimal import generate_animal
 from generations.generateHistory import generate_cell_animals_history
 from generations.generatePlot import generate_plot
-from Entities import Plot, History, Heatmap
+from Entities import Plot, History, Heatmap, Quadcopter
 
 
 class ParseToEntities:
@@ -56,3 +56,22 @@ class ParseFromEntities:
         plots_as_tuples = [plot.to_tuple() for plot in plots_as_entities]
         return plots_as_tuples
 
+    def adopters_dictionary(self, adopters_as_entities):
+        adopters_dictionary = {}
+        for adopter in adopters_as_entities:
+            adopters_dictionary[adopter.id] = [adopter.preferred.description, adopter.secondpreferred.description]
+        return adopters_dictionary
+
+    def free_drones(self, drones_as_entities):
+        free_drones = {}
+        for drone in drones_as_entities:
+            if drone.isfree:
+                free_drones[drone.id] = (drone.x, drone.y)
+        return free_drones
+
+    def busy_drones(self, drones_as_entities):
+        busy_drones = {}
+        for drone in drones_as_entities:
+            if not drone.isfree:
+                busy_drones[drone.id] = (drone.x, drone.y)
+        return busy_drones

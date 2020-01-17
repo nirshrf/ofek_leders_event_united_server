@@ -8,7 +8,7 @@ JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
                        History='{id, petType{id, code, description}, amount}',
                        GridCell='{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}',
                        Adopter='{id, name, preferred{id, code, description}, secondpreferred{id, code, description}}',
-                       Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, x, y, eventTime, eventStatus{id, code, description}}',
+                       Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, gridCell{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}, eventTime, eventStatus{id, code, description}}',
                        Adoptee='{id, petType{id, code, description}, x, y, imageBeforeURL, imageAfterURL, adoptionStatus{id, code, description}}',
                        AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}',
                        Plot='{timestamp, x, y, z}')
@@ -18,8 +18,17 @@ class Adopter:
     def __init__(self, id=None, name=None, preferred=None, secondpreferred=None):
         self.id = id
         self.name = name
-        self.preferred = PetType(*preferred.values())
-        self.secondpreferred = PetType(*secondpreferred.values())
+        if type(preferred) == PetType:
+            self.preferred = preferred
+        else:
+            self.preferred = PetType(*preferred.values())
+        if type(secondpreferred) == PetType:
+            self.secondpreferred = secondpreferred
+        else:
+            self.secondpreferred = PetType(*secondpreferred.values())
+
+    def to_dictionary(self):
+        return {self.id, [self.preferred.description, self.secondpreferred.description]}
 
     def __str__(self):
         return "Adopter{" + "\nid : " + self.id + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
@@ -50,6 +59,9 @@ class Quadcopter:
         self.isfree = isfree
         self.x = x
         self.y = y
+
+    def to_tuple(self):
+        return self.id, self.x, self.y
 
     def __repr__(self):
         return "Quadcopter{" + "\nId : " + str(self.id) + "\nName : " + str(self.name) + "}\n"
@@ -119,14 +131,13 @@ class EventStatus:
 
 
 class Event:
-    def __init__(self, id, quadcopter, x, y, eventTime, eventStatus):
+    def __init__(self, id, quadcopter, gridCell, eventTime, eventStatus):
         self.id = id
         if type(quadcopter) == Quadcopter:
             self.quadcopter = quadcopter
         else:
             self.quadcopter = Quadcopter(*quadcopter.values())
-        self.x = x
-        self.y = y
+        self.gridCell = gridCell
         self.eventTime = eventTime
         if type(eventStatus) == EventStatus:
             self.eventStatus = eventStatus

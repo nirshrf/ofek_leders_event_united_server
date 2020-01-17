@@ -18,6 +18,8 @@ class ServerHandler(SimpleHTTPRequestHandler):
         post_body = self.rfile.read(content_len)
         if str(post_body)[2:-1] == '\"Generate_Data\"':
             exec(open("generations/generateAll.py").read())
+        elif str(post_body)[2:-1] == '\"Send_Drones\"':
+            exec(open("requests/sendUnallocatedDrones.py").read())
         self.end_headers()
         return
 
@@ -32,7 +34,7 @@ if __name__ == '__main__':
     graphqlrequests = GraphQLRequests(JAVA_server_url)
     graphqlmutation = GraphQlMutation(JAVA_server_url)
 #   test
-#   print(graphqlrequests.import_gridcell(0, 0))
+    #print(graphqlrequests.import_gridcell(1, 1))
 #   end test
     run_server("", 8080, ServerHandler)
 
