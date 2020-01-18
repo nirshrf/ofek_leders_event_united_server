@@ -7,7 +7,7 @@ JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
                        AdoptionStatus='{id, code, description}',
                        History='{id, petType{id, code, description}, amount}',
                        GridCell='{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}',
-                       Adopter='{id, name, preferred{id, code, description}, secondpreferred{id, code, description}}',
+                       Adopter='{id, name, preferred{id, code, description}, secondpreferred{id, code, description}, isvalid}',
                        Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, gridCell{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}, eventTime, eventStatus{id, code, description}}',
                        Adoptee='{id, petType{id, code, description}, x, y, imageBeforeURL, imageAfterURL, adoptionStatus{id, code, description}}',
                        AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}',
@@ -15,7 +15,7 @@ JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
 
 
 class Adopter:
-    def __init__(self, id=None, name=None, preferred=None, secondpreferred=None):
+    def __init__(self, id=None, name=None, preferred=None, secondpreferred=None, valid=None):
         self.id = id
         self.name = name
         if type(preferred) == PetType:
@@ -26,16 +26,17 @@ class Adopter:
             self.secondpreferred = secondpreferred
         else:
             self.secondpreferred = PetType(*secondpreferred.values())
+        self.valid = valid
 
     def to_dictionary(self):
         return {self.id, [self.preferred.description, self.secondpreferred.description]}
 
     def __str__(self):
-        return "Adopter{" + "\nid : " + self.id + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
+        return "Adopter{" + "\nid : " + str(self.id) + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
                "\nSecond Preferred : " + str(self.secondpreferred) + "}\n"
 
     def __repr__(self):
-        return "Adopter{" + "\nid : " + self.id + "\nname : " + self.name + "\npreferred : " + str(self.preferred )+ \
+        return "Adopter{" + "\nid : " + str(self.id) + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
                "\nSecond Preferred : " + str(self.secondpreferred) + "}\n"
 
 

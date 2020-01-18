@@ -50,7 +50,7 @@ def randomize_in_range(a, b):
     """
     generate random number between a and b inclusive
     """
-    return a + random.random() * (b - a);
+    return a + random.random() * (b - a)
 
 
 def generate_plot(animal):

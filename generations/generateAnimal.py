@@ -8,5 +8,5 @@ def generate_animal(x,y, heat_map):
     produced earlier)
     """
     animals_probs = deepcopy(heat_map[x][y])
-    animals_probs["None"] = 1.0 - sum(animals_probs.values())
-    return choice(list(animals_probs.keys()), 1, p = list(animals_probs.values()))[0]
+    animals_probs["none"] = 1.0 - sum(animals_probs.values())
+    return choice(list(animals_probs.keys()), 1, p=list(animals_probs.values()))[0]

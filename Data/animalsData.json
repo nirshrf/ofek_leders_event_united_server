@@ -1,24 +1,30 @@
 {
-    "cats": [
+    "cat": [
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fcats%2FScience_Cats-84873657.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fcats%2Fcat-2068462_1920-144x144-376_0-1279_1280.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fcats%2Fhyperrrealistic-drawings-cats-yuki-kudo-fb-png__700.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fcats%2Fהורדה (2).jpeg?alt=media"
     ],
-    "dogs": [
+    "dog": [
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fdogs%2Fblog_make-dogs-day_101619_main.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fdogs%2Fgettyimages-590486672-e1508512743796.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fdogs%2Fimages.jpeg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fdogs%2Fהורדה (1).jpeg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fdogs%2Fהורדה.jpeg?alt=media"
     ],
-    "parrots": [
+    "parrot": [
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fparrots%2F1022602_0.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fparrots%2F12255733_web1_180610-BPD-M-CPT502481367.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fparrots%2F20180818_STP004_0.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fparrots%2FScarlet-macaw-at-Costa-Rican-jungles-By-ramesh-aithal--1140x450.jpg?alt=media"
     ],
-    "empty": [
+    "rabbit": [
+        "rabbit1",
+        "rabbit2",
+        "rabbit3",
+        "rabbit4"
+    ],
+    "none": [
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2FFlight-Attendant-serving-beverages-and-snacks.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Ffuel.jpg?alt=media",
         "https://firebasestorage.googleapis.com/v0/b/ofek-leaders.appspot.com/o/photos%2Fin flight.jpg?alt=media"

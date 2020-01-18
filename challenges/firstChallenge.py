@@ -1,8 +1,4 @@
-
-
-
-def send_drones(heat_map, adopters_requests, free_drones_locations, busy_drones_destinations,
-                take_picture_penalty, send_drone_penalty):
+def send_drones(heat_map, adopters_requests, free_drones_locations, busy_drones_destinations, take_picture_penalty, send_drone_penalty):
     """
     this function is responsible to send drones to take "pictures" on rectangles.
     input:
@@ -54,7 +50,7 @@ def send_drones(heat_map, adopters_requests, free_drones_locations, busy_drones_
             for col in range(100):
                 """we don't want to send a drone to a rectangle which another drones is currently heading to, so
                 this is the purpose of this if. put attention: sending a drone to a location that is near a location
-                that another drone is heading to is sub-optimal to, beacuse in terms of costs it will be better to
+                that another drone is heading to is sub-optimal to, because in terms of costs it will be better to
                 send the busy drone to that location after it will arrive to it's destination. so there is room
                 for improvement here that you may like to tackle. """
                 if (row, col) not in busy_drones_destinations.values():

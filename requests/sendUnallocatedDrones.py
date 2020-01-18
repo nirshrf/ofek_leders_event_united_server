@@ -17,3 +17,4 @@ if __name__ == '__main__':
     drones_to_send = send_drones(generate_heat_map(), adopters_as_dictionary, free_drones, busy_drones, 1, 1)
     for drone in drones_to_send.items():
         events.append(graph_mutation_handler.create_event(int(drone[0]), drone[1][0], drone[1][1]))
+    print(events)

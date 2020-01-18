@@ -1,5 +1,4 @@
 import requests
-import graphene
 from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary, Plot, PetType
 
 

@@ -5,7 +5,6 @@ from generations.generateAll import *
 
 JAVA_server_url = 'http://localhost:9000/graphql'
 
-
 class ServerHandler(SimpleHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)

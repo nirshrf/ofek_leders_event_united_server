@@ -2,11 +2,13 @@ from generations.generateHeatmap import generate_heat_map
 from generations.generateAnimal import generate_animal
 from generations.generateHistory import generate_cell_animals_history
 from generations.generatePlot import generate_plot
-from Entities import Plot, History, Heatmap, Quadcopter
+from Entities import Plot, History, Heatmap, Quadcopter, Adoptee
+from Data.adoptionStatusDictionary import get_adoption_status
+from Data.petTypeDictionary import get_pet_type
+from Data.animalsPictureDictionary import get_animal_picture_url
 
 
 class ParseToEntities:
-
     def __init__(self):
         pass
 
@@ -20,23 +22,29 @@ class ParseToEntities:
 
     def history(self, id, animal_history, pet_types):
         history = [History(id, pet_types[h[0]], h[1]) for h in animal_history.items()]
+        return history
 
     def generate_animals(self, heatmap_as_dictionary):
-        animals_as_entities = [[generate_animal(x, y, heatmap_as_dictionary) for y in range(100)] for x in range(100)]
+        animals_as_entities, animals_as_entities_line = [], []
+        for x in range(100):
+            for y in range(100):
+                animal = generate_animal(x, y, heatmap_as_dictionary)
+                animals_as_entities_line.append(Adoptee((x*100+y+1), get_pet_type(animal), x, y, get_animal_picture_url(animal), get_animal_picture_url(animal), get_adoption_status('not_adopted')))
+            animals_as_entities.append(animals_as_entities_line)
+            animals_as_entities_line = []
         return animals_as_entities
 
     def generate_animals_history(self, heatmap_as_dictionary, sample_size):
         animals_history = [[generate_cell_animals_history(x, y, sample_size, heatmap_as_dictionary) for y in range(100)] for x in range(100)]
         return animals_history
 
-    def generate_plots(self, animals_as_list):
+    def generate_plots(self, animals_as_entities):
         plots = []
         plots_line = []
-        x, y = 0, 0
-        for animal_line in animals_as_list:
+        for animal_line in animals_as_entities:
             for animal in animal_line:
-                if animal != 'None':
-                    plots_line.append(self.plots(generate_plot(animal)))
+                if animal.petType.description != 'none':
+                    plots_line.append(self.plots(generate_plot(animal.petType.description)))
                 else:
                     plots_line.append(None)
             plots.append(plots_line)
