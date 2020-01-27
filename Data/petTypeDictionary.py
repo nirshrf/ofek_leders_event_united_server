@@ -1,13 +1,15 @@
+from graphqlHandler import GraphQLRequests
+from main import JAVA_server_url
 from Entities import PetType
 
-pet_type_dictionary = dict(none=PetType(0, 0, 'none'),
-                           dog=PetType(1, 1, 'dog'),
-                           cat=PetType(2, 2, 'cat'),
-                           rabbit=PetType(3, 3, 'rabbit'),
-                           parrot=PetType(4, 4, 'parrot'))
+graph_handler = GraphQLRequests(JAVA_server_url)
+pet_type_dictionary = {}
+pet_types = graph_handler.import_pet_types()
+for pet_type in pet_types:
+    pet_type_dictionary[pet_type.description] = pet_type
 
 
 def get_pet_type(pet_type):
     if pet_type in pet_type_dictionary.keys():
         return pet_type_dictionary[pet_type]
-    raise KeyError
+    raise KeyError(pet_type)

@@ -2,7 +2,7 @@ from numpy.random import choice
 from copy import deepcopy
 
 
-def generate_animal(x,y, heat_map):
+def generate_animal(x, y, heat_map):
     """
     this function generates an animal on the x,y rectangle on the grid, based on the given heat_map (heat map was already
     produced earlier)

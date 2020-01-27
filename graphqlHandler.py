@@ -1,5 +1,6 @@
 import requests
-from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, AiStatus, JSON_dictionary, Plot, PetType
+from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, Plot, PetType
+from Data import get_entity_as_json
 
 
 class GraphQLRequests:
@@ -7,19 +8,19 @@ class GraphQLRequests:
         self.url = url
 
     def import_adopters(self):
-        request_data = requests.post(self.url, json={"query": '{adopters'+JSON_dictionary["Adopter"]+'}'}).json()
+        request_data = requests.post(self.url, json={"query": '{adopters'+get_entity_as_json("Adopter")+'}'}).json()
         return self.parse_adopters_from_json(request_data)
 
     def parse_adopters_from_json(self, query_response):
         if self.validate_more_than_one_adopter(query_response):
-            return [Adopter(*adopter.values()) for adopter in query_response['data']['adopters']]
-        return [Adopter(*query_response['data']['adopters'][0].values())]
+            return [Adopter(list(adopter.values())) for adopter in query_response['data']['adopters']]
+        return [Adopter(list(query_response['data']['adopters'][0].values()))]
 
     def validate_more_than_one_adopter(self, adopters_dictionary):
         return len(adopters_dictionary['data']['adopters']) > 1
 
     def import_quads(self):
-        request_data = requests.post(self.url, json={"query": '{allQuadcopters'+JSON_dictionary["Quadcopter"]+'}'}).json()
+        request_data = requests.post(self.url, json={"query": '{allQuadcopters'+get_entity_as_json("Quadcopter")+'}'}).json()
         return self.parse_quads_from_json(request_data)
 
     def parse_quads_from_json(self, query_response):
@@ -31,7 +32,12 @@ class GraphQLRequests:
         return len(quads_dictionary['data']['allQuadcopters']) > 1
 
     def import_gridcell(self, x, y):
-        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+JSON_dictionary["GridCell"]+'}'
+        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+get_entity_as_json("GridCell")+'}'
+        request_data = requests.post(self.url, json={"query": json_body}).json()
+        return self.parse_gridcell_from_json(request_data)
+
+    def import_fix_gridcell(self, x, y):
+        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+get_entity_as_json("GridCell_Fix")+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_gridcell_from_json(request_data)
 
@@ -39,7 +45,7 @@ class GraphQLRequests:
         return GridCell(*query_response['data']['mapData'].values())
 
     def import_events(self, isOpen):
-        json_body = '{openEvents(isOpen:'+str(isOpen).lower()+')'+JSON_dictionary["Event"]+'}'
+        json_body = '{openEvents(isOpen:'+str(isOpen).lower()+')'+get_entity_as_json("Event")+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_events_from_json(request_data)
 
@@ -52,7 +58,7 @@ class GraphQLRequests:
         return len(events_dictionary['data']['openEvents']) > 1
 
     def import_adoptionStatus(self):
-        json_body = '{allAdoptionStatus' + JSON_dictionary["AdoptionStatus"] + '}'
+        json_body = '{allAdoptionStatus' + get_entity_as_json("AdoptionStatus") + '}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_adoption_status_from_json(request_data)
 
@@ -65,7 +71,7 @@ class GraphQLRequests:
         return len(adoption_status_dictionary['data']['allAdoptionStatus']) > 1
 
     def import_adoptees(self, adoption_status_code):
-        json_body = '{allAdoptees(adoptionStatusCode:'+str(adoption_status_code)+')'+JSON_dictionary["Adoptee"]+'}'
+        json_body = '{allAdoptees(adoptionStatusCode:'+str(adoption_status_code)+')'+get_entity_as_json("Adoptee")+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_adoptees_from_json(request_data)
 
@@ -78,17 +84,17 @@ class GraphQLRequests:
         return len(adoptee_dictionary['data']['allAdoptees']) > 1
 
     def import_pet_types(self):
-        json_body = '{allPetTypes'+JSON_dictionary["PetType"]+'}'
+        json_body = '{allPetTypes'+get_entity_as_json("PetType")+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_pet_types_from_json(request_data)
 
     def parse_pet_types_from_json(self, query_response):
-        return [PetType(*petType) for petType in query_response['data']['allPetTypes']]
+        return [PetType(*petType.values()) for petType in query_response['data']['allPetTypes']]
 
 
 '''
     def import_AI_status(self):
-        request_data = requests.post(self.url, json={"query": JSON_dictionary['AiStatus']}).json()
+        request_data = Requests.post(self.url, json={"query": get_entity_as_json('AiStatus') }).json()
         return self.parse_status_from_json(request_data)
 
     def parse_status_from_json(self, query_response):
@@ -102,24 +108,86 @@ class GraphQlMutation:
         self.url = url
 
     def set_plot(self, plot):
-        request_data = requests.post(self.url, json={"query": "mutation setPlot "+'{setPlot(timestamp: \"%s\",x: %d,y: %d,z: %d)' % plot.to_tuple() +
-                                                                                    JSON_dictionary['Plot'] +
-                                                                                    '}'}).json()
+        for dataset in plot:
+            #data = requests.post(self.url, json={"query": "mutation setPlot "+'{setPlot(cellX: %d, cellY: %d, timestamp: %d,x: %f,y: %f,z: %f)' % dataset.for_mutation() + '}'}).json()
+            F = open("p.txt", "a")
+            F.write("mutation setPlot "+'{setPlot(cellX: %d, cellY: %d, timestamp: %d,x: %f,y: %f,z: %f)' % dataset.for_mutation() + '}\r')
+            F.close()
+        return None
 
-        return self.parse_plot_from_json(request_data)
-
-    def parse_plot_from_json(self, query_response):
-        return Plot(*query_response['data']['setPlot'].values())
+    def set_grid_plots(self, grid_plots):
+        for plot in grid_plots:
+            self.set_plot(plot)
+        return None
 
     def create_event(self, drone_id, drone_x, drone_y):
         drone_properties = (drone_id, drone_x, drone_y)
-        request_data = requests.post(self.url, json={"query": "mutation createEvent "+'{createEvent(quadId: \"%d\",x: %d,y: %d)' % drone_properties +
-                                                                                    JSON_dictionary['Event'] +
-                                                                                    '}'}).json()
+        requests.post(self.url, json={"query": "mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '}'}).json()
+        return None
 
-        return self.parse_event_from_json(request_data)
+    def set_history(self, history):
+        #data = requests.post(self.url, json={"query": "mutation setHistory "+'{setHistory(cellX: %d, cellY: %d,petTypeCode: %d,amount: %d)' % history.for_mutation() +'}'}).json()
+        F = open("h.txt", "a")
+        F.write("mutation setHistory "+'{setHistory(cellX: %d, cellY: %d,petTypeCode: %d,amount: %d)' % history.for_mutation() +'}\r')
+        F.close()
+        return None
 
-    def parse_event_from_json(self, query_response):
-        return Event(*query_response['data']['createEvent'].values())
+    def set_cell_history(self, histories):
+        for history in histories:
+            self.set_history(history)
+        return None
 
+    def set_grid_history(self, grid_histories):
+        for line in grid_histories:
+            for cell in line:
+                self.set_cell_history(cell)
+        return None
 
+    def set_adopter(self, adopter):
+        if adopter.secondpreferred is None:
+            #data = requests.post(self.url, json={"query": "mutation setAdopters "+'{setAdopters(name: \"%s\",preferredCode: %d,isValid: %s)' % adopter.for_mutation() +'}'}).json()
+            F = open("adop.txt", "a")
+            F.write("mutation setAdopters "+'{setAdopters(name: \"%s\",preferredCode: %d,isValid: %s)' % adopter.for_mutation() +'}\r')
+            F.close()
+        else:
+            #data = requests.post(self.url, json={"query": "mutation setAdopters "+'{setAdopters(name: \"%s\", preferredCode: %d, secondPreferredCode: %d, isValid: %s)' % adopter.for_mutation() +'}'}).json()
+            F = open("adop.txt", "a")
+            F.write("mutation setAdopters "+'{setAdopters(name: \"%s\", preferredCode: %d, secondPreferredCode: %d, isValid: %s)' % adopter.for_mutation() +'}\r')
+            F.close()
+        return None
+
+    def set_adopters(self, adopters):
+        for adopter in adopters:
+            self.set_adopter(adopter)
+        return None
+
+    def set_adoptee(self, adoptee):
+        if adoptee.pet_type.description != "none":
+            #data = requests.post(self.url, json={"query": "mutation setAdoptee " + '{setAdoptee(petTypeCode: %d, x: %d, y: %d, imageBeforeUrl: \"%s\", imageAfterUrl: \"%s\", adoptionStatusCode: %d)' % adoptee.for_mutation() + '}'}).json()
+            F = open("anim.txt", "a")
+            F.write("mutation setAdoptee " + '{setAdoptee(petTypeCode: %d, x: %d, y: %d, imageBeforeUrl: \"%s\", imageAfterUrl: \"%s\", adoptionStatusCode: %d)' % adoptee.for_mutation() + '}\r')
+            F.close()
+        return None
+
+    def set_adoptees(self, adoptees):
+        for adoptee in adoptees:
+            self.set_adoptee(adoptee)
+        return None
+
+    def set_grid_cell(self, grid_line):
+        for grid_cell in grid_line:
+            #data = requests.post(self.url, json={"query": "mutation setGridCell "+'{setGridCell(x: %d, y: %d, lastPictureUrl: \"%s\", petTypeCode: %d)' % grid_cell.for_mutation() +'}'}).json()
+            F = open("g_cells.txt", "a")
+            F.write("mutation setGridCell "+'{setGridCell(x: %d, y: %d, lastPictureUrl: \"%s\", petTypeCode: %d)' % grid_cell.for_mutation() +'}\r')
+            F.close()
+        return None
+
+    def set_grid(self, grid):
+        for grid_line in grid:
+            self.set_grid_cell(grid_line)
+        return None
+
+    def set_quads(self, quads):
+        for quad in quads:
+            data = requests.post(self.url, json={"query": "mutation setQuadcopter "+'{setQuadcopter(x: %d, y: %d, isfree: %s)}' % (quad.x, quad.y, quad.isfree)}).json()
+        return None

@@ -7,5 +7,5 @@ animals_dictionary = json.loads(json_content)
 
 def get_animal_picture_url(animal):
     if animal in animals_dictionary.keys():
-        return random.sample(animals_dictionary[animal], 1)
+        return random.sample(animals_dictionary[animal], 1)[0]
     raise KeyError

@@ -53,7 +53,7 @@ def randomize_in_range(a, b):
     return a + random.random() * (b - a)
 
 
-def generate_plot(animal):
+def generate_plots(animal):
     """
     input:
         animal is a string from: "dog", "cat", "rabbit", "parrot", None
