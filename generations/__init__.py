@@ -1,2 +1,0 @@
-from generations.generateQuacopters import generate_quadcopters
-from generations.generateAll import generate_all_data

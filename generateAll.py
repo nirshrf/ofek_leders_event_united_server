@@ -1,7 +1,7 @@
 from generations.generateHeatmap import generate_heat_map
 from generations.generateAdopters import generate_adopters
-from generations.conversions import ParseToEntities, ParseFromEntities
-from graphqlHandler import GraphQLRequests, GraphQlMutation
+from generations.conversions import to_entity_parser, from_entity_parser
+from graphql_handler.graphqlHandler import GraphQLRequests, GraphQlMutation
 from generations.generate_grid_cell import generate_grid_cell
 import timeit as time
 
@@ -10,8 +10,6 @@ def generate_all_data():
     global JAVA_server_url
     graph_query_handler = GraphQLRequests(JAVA_server_url)
     graph_mutation_handler = GraphQlMutation(JAVA_server_url)
-    to_entity_parser = ParseToEntities()
-    from_entity_parser = ParseFromEntities()
     heat_map = to_entity_parser.heatmap(generate_heat_map())
     h_map = from_entity_parser.heatmap(heat_map)
     print("generating animals..", time.time.ctime())

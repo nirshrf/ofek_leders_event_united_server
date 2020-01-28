@@ -1,0 +1,1 @@
+from graphql_handler.entity_as_json_dictionary import get_entity_as_json

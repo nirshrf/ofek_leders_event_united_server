@@ -1,6 +1,3 @@
-import numpy as np
-from numpy.random import choice
-
 
 animals_distribution = {"dog": 480, "cat": 450, "rabbit": 340, "parrot": 230} #total animals = 1500
 total_non_animals = 8500

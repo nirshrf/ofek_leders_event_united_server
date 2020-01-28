@@ -1,7 +1,7 @@
 import random as rd
 from Entities import Quadcopter
-from graphqlHandler import GraphQlMutation
-from main import JAVA_server_url
+from graphql_handler.graphqlHandler import GraphQlMutation
+from Data.app_properties import JAVA_server_url
 
 
 def generate_quadcopters(amount):

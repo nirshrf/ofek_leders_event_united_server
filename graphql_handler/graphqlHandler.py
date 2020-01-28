@@ -1,6 +1,7 @@
 import requests
 from Entities import Adopter, Quadcopter, GridCell, Event, AdoptionStatus, Adoptee, Plot, PetType
-from Data import get_entity_as_json
+from graphql_handler import get_entity_as_json
+from generations.generatePlot import generate_random_plot
 
 
 class GraphQLRequests:
@@ -31,18 +32,24 @@ class GraphQLRequests:
     def validate_more_than_one_quad(self, quads_dictionary):
         return len(quads_dictionary['data']['allQuadcopters']) > 1
 
+    def import_gridcell_plots(self, x, y):
+        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+get_entity_as_json("GridCell_plots")+'}'
+        request_data = requests.post(self.url, json={"query": json_body}).json()
+        return self.parse_gridcell_plots_from_json(request_data, x, y)
+
+    def parse_gridcell_plots_from_json(self, query_response, x, y):
+        if query_response['data']['mapData']['plot'] == []:
+            return [Plot(x, y, *plot) for plot in generate_random_plot()]
+        return [Plot(x, y, *plot.values()) for plot in query_response['data']['mapData']['plot']]
+
     def import_gridcell(self, x, y):
         json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+get_entity_as_json("GridCell")+'}'
         request_data = requests.post(self.url, json={"query": json_body}).json()
         return self.parse_gridcell_from_json(request_data)
 
-    def import_fix_gridcell(self, x, y):
-        json_body = '{mapData(x:'+str(x)+',y:'+str(y)+')'+get_entity_as_json("GridCell_Fix")+'}'
-        request_data = requests.post(self.url, json={"query": json_body}).json()
-        return self.parse_gridcell_from_json(request_data)
-
     def parse_gridcell_from_json(self, query_response):
-        return GridCell(*query_response['data']['mapData'].values())
+        print(query_response['data']['mapData'])
+        return GridCell([*query_response['data']['mapData'].values()])
 
     def import_events(self, isOpen):
         json_body = '{openEvents(isOpen:'+str(isOpen).lower()+')'+get_entity_as_json("Event")+'}'

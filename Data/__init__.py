@@ -1,4 +1,0 @@
-from Data.entity_as_json_dictionary import get_entity_as_json
-from Data.petTypeDictionary import get_pet_type
-from Data.adoptionStatusDictionary import get_adoption_status
-from Data.animalsPictureDictionary import get_animal_picture_url

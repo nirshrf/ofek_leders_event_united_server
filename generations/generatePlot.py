@@ -56,9 +56,9 @@ def randomize_in_range(a, b):
 def generate_plots(animal):
     """
     input:
-        animal is a string from: "dog", "cat", "rabbit", "parrot", None
+        animal is a string from: "dog", "cat", "rabbit", "parrot", "none"
     output:
-        a list of tuples of the form (ts, x, y) where ts in time in seconds from last minute (from 0 to 60)and
+        a list of tuples of the form (ts, x, y, z) where ts in time in seconds from last minute (from 0 to 60)and
         x,y are coordinates of the object detected by the sensor (in meters). in max there will be 60 records in this
         list, if the sensor fully detected the object in the rectangle within the given timeframe
     """

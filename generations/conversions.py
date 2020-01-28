@@ -2,7 +2,10 @@ from generations.generateAnimal import generate_animal
 from generations.generateHistory import generate_cell_animals_history
 from generations.generatePlot import generate_plots
 from Entities import Plot, History, Heatmap, Adoptee
-from Data import get_animal_picture_url, get_pet_type, get_adoption_status
+from animalsPictureDictionary import get_animal_picture_url
+from adoptionStatusDictionary import get_adoption_status
+from petTypeDictionary import get_pet_type
+
 
 class ParseToEntities:
     def __init__(self):
@@ -65,7 +68,10 @@ class ParseFromEntities:
     def adopters_dictionary(self, adopters_as_entities):
         adopters_dictionary = {}
         for adopter in adopters_as_entities:
-            adopters_dictionary[adopter.name] = [adopter.preferred.description, adopter.secondpreferred.description]
+            if adopter.secondpreferred is None:
+                adopters_dictionary[adopter.name] = ["None"]
+            else:
+                adopters_dictionary[adopter.name] = [adopter.preferred.description, adopter.secondpreferred.description]
         return adopters_dictionary
 
     def free_drones(self, drones_as_entities):
@@ -81,3 +87,9 @@ class ParseFromEntities:
             if not drone.isfree:
                 busy_drones[drone.id] = (drone.x, drone.y)
         return busy_drones
+
+
+to_entity_parser = ParseToEntities()
+from_entity_parser = ParseFromEntities()
+
+

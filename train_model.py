@@ -1,4 +1,4 @@
-import team2_ai_solution as team2_ai_solution
+import team2_ai_solution
 import pickle
 
 ###########################################

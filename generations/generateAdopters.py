@@ -1,5 +1,5 @@
 from Entities import Adopter
-from Data import get_pet_type
+from petTypeDictionary import get_pet_type
 from faker import Faker
 from generations.generate_adopter_request import generate_adopter_request
 

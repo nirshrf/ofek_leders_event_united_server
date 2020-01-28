@@ -1,5 +1,5 @@
 from Entities import GridCell
-from Data import get_animal_picture_url
+from animalsPictureDictionary import get_animal_picture_url
 
 
 def generate_grid_cell(animals, grid_size):
