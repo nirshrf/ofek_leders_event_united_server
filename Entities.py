@@ -1,42 +1,38 @@
 # Module: Entities.py
-
-JSON_dictionary = dict(Quadcopter='{id, name, launchtime, isfree, x, y}',
-                       PetType='{id, code, description}',
-                       EventStatus='{id, code, description}',
-                       Coordinate='{longitude, latitude}',
-                       AdoptionStatus='{id, code, description}',
-                       History='{id, petType{id, code, description}, amount}',
-                       GridCell='{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}',
-                       Adopter='{id, name, preferred{id, code, description}, secondpreferred{id, code, description}}',
-                       Event='{id, quadcopter{id, name, launchtime, isfree, x, y}, gridCell{id, x, y, lastPictureUrl, history{id, petType{id, code, description}, amount}}, eventTime, eventStatus{id, code, description}}',
-                       Adoptee='{id, petType{id, code, description}, x, y, imageBeforeURL, imageAfterURL, adoptionStatus{id, code, description}}',
-                       AiStatus='{toggleDroneAI, togglePetsAI, toggleAdoptionAI, toggleBdaAI}',
-                       Plot='{timestamp, x, y, z}')
-
-
 class Adopter:
-    def __init__(self, id=None, name=None, preferred=None, secondpreferred=None):
-        self.id = id
-        self.name = name
-        if type(preferred) == PetType:
-            self.preferred = preferred
+    def __init__(self, args):
+        if len(args) == 3:
+            self.name = args[0]
+            if type(args[1]) == PetType:
+                self.preferred = args[1]
+            else:
+                self.preferred = PetType(*args[1].values())
+            self.secondpreferred = None
+            self.valid = str(args[2]).lower()
         else:
-            self.preferred = PetType(*preferred.values())
-        if type(secondpreferred) == PetType:
-            self.secondpreferred = secondpreferred
-        else:
-            self.secondpreferred = PetType(*secondpreferred.values())
+            self.name = args[0]
+            if type(args[1]) == PetType:
+                self.preferred = args[1]
+            else:
+                self.preferred = PetType(*args[1].values())
+            if type(args[2]) == PetType or args[2] is None:
+                self.secondpreferred = args[2]
+            else:
+                self.secondpreferred = PetType(*args[2].values())
+            self.valid = str(args[3]).lower()
 
-    def to_dictionary(self):
-        return {self.id, [self.preferred.description, self.secondpreferred.description]}
+    def for_mutation(self):
+        if self.secondpreferred is None:
+            return self.name, self.preferred.code, self.valid
+        return self.name, self.preferred.code, self.secondpreferred.code, self.valid
 
     def __str__(self):
-        return "Adopter{" + "\nid : " + self.id + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
-               "\nSecond Preferred : " + str(self.secondpreferred) + "}\n"
+        return "\nAdopter{" + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
+               "\nSecond Preferred : " + str(self.secondpreferred) + "\n}"
 
     def __repr__(self):
-        return "Adopter{" + "\nid : " + self.id + "\nname : " + self.name + "\npreferred : " + str(self.preferred )+ \
-               "\nSecond Preferred : " + str(self.secondpreferred) + "}\n"
+        return "\nAdopter{" + "\nname : " + str(self.name) + "\npreferred : " + str(self.preferred )+ \
+               "\nSecond Preferred : " + str(self.secondpreferred) + "\n}"
 
 
 class Coordinate:
@@ -45,14 +41,14 @@ class Coordinate:
         self.latitude = latitude
 
     def __repr__(self):
-        return "Coordinate{" + "\nLongitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude) + "}\n"
+        return "\nCoordinate{" + "\nLongitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude) + "\n}"
 
     def __str__(self):
-        return "Coordinate{" + "\nLongitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude) + "}\n"
+        return "\nCoordinate{" + "\nLongitude : " + str(self.longitude) + "\nLatitude : " + str(self.longitude) + "\n}"
 
 
 class Quadcopter:
-    def __init__(self, id,name, launchtime, isfree, x, y):
+    def __init__(self, id, name, launchtime, isfree, x, y):
         self.id = id
         self.name = name
         self.launchtime = launchtime
@@ -60,131 +56,138 @@ class Quadcopter:
         self.x = x
         self.y = y
 
-    def to_tuple(self):
-        return self.id, self.x, self.y
-
     def __repr__(self):
-        return "Quadcopter{" + "\nId : " + str(self.id) + "\nName : " + str(self.name) + "}\n"
+        return "\nQuadcopter{" + "\nName : " + str(self.name) + "\n}"
 
     def __str__(self):
-        return "Quadcopter{" + "\nId : " + str(self.id) + "\nName : " + str(self.name) + "}\n"
+        return "\nQuadcopter{" + "\nName : " + str(self.name) + "\n}"
 
 
 class PetType:
-    def __init__(self, id, code, description):
-        self.id = id
-        self.code = code
+    def __init__(self, code, description):
+        self.code = int(code)
         self.description = description
 
+    def to_dictionary(self):
+        return dict(code=self.code,
+                    description=self.description)
+
     def __repr__(self):
-        return "PetType{" + "\nId : " + str(self.id) + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "}\n"
+        return "\nPetType{" + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "\n}"
 
     def __str__(self):
-        return "PetType{" + "\nId : " + str(self.id) + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "}\n"
+        return "\nPetType{" + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "\n}"
 
 
 class History:
-    def __init__(self, id, petType, amount):
-        self.id = id
+    def __init__(self, cell_x ,cell_y, petType, amount):
+        self.cell_x = cell_x
+        self.cell_y = cell_y
         if type(petType) == PetType:
             self.petType = petType
         else:
             self.petType = PetType(*petType.values())
         self.amount = amount
 
+    def for_mutation(self):
+        return self.cell_x, self.cell_y, self.petType.code, self.amount
+
     def __repr__(self):
-        return "History{" + "\nId : " + str(self.id) + "\nType : " + str(self.petType) + "\nAmount : " + str(self.amount) + "}\n"
+        return "\nHistory{" + str(self.petType) + "\nAmount : " + str(self.amount) + "\n}"
 
     def __str__(self):
-        return "History{" + "\nId : " + str(self.id) + "\nType : " + str(self.petType) + "\nAmount : " + str(self.amount) + "}\n"
+        return "\nHistory{" + str(self.petType) + "\nAmount : " + str(self.amount) + "\n}"
 
 
 class GridCell:
-    def __init__(self, id, x, y, lastPictureUrl, history):
-        self.id = id
-        self.x = x
-        self.y = y
-        self.lastPictureUrl = lastPictureUrl
-        if type(history[0]) == History:
-            self.history = history
+    def __init__(self, args):
+        self.x = args[0]
+        self.y = args[1]
+        self.lastPictureUrl = args[2]
+        if type(args[3]) == PetType or args[3] is None:
+            self.pet_type = args[3]
         else:
-            self.history = [History(*h.values()) for h in history]
+            self.pet_type = PetType(*args[3].values())
+
+    def for_mutation(self):
+        if self.pet_type is None:
+            return self.x, self.y, self.lastPictureUrl, 0
+        return self.x, self.y, self.lastPictureUrl, self.pet_type.code
 
     def __repr__(self):
-        return "GridCell{" + "\nX : " + str(self.x) + "\nY : " + str(self.y) + "\nHistory : " + str(self.history) + "}\n"
+        return "\nGridCell{" + "\nX : " + str(self.x) + "\nY : " + str(self.y) + str(self.pet_type) + "\n}"
 
     def __str__(self):
-        return "GridCell{" + "\nX : " + str(self.x) + "\nY : " + str(self.y) + "\nHistory : " + str(self.history) + "}\n"
+        return "\nGridCell{" + "\nX : " + str(self.x) + "\nY : " + str(self.y) + "\n}"
 
 
 class EventStatus:
-    def __init__(self, id, code, description):
-        self.id = id
+    def __init__(self, code, description):
         self.code = code
         self.description = description
 
     def __repr__(self):
-        return "EventStatus{" + "\nId : " + str(self.id) + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "}\n"
+        return "\nEventStatus{" + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "\n}"
 
     def __str__(self):
-        return "EventStatus{" + "\nId : " + str(self.id) + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "}\n"
+        return "\nEventStatus{" + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "\n}"
 
 
 class Event:
-    def __init__(self, id, quadcopter, gridCell, eventTime, eventStatus):
-        self.id = id
+    def __init__(self, quadcopter, grid_cell, event_time, event_status):
         if type(quadcopter) == Quadcopter:
             self.quadcopter = quadcopter
         else:
             self.quadcopter = Quadcopter(*quadcopter.values())
-        self.gridCell = gridCell
-        self.eventTime = eventTime
-        if type(eventStatus) == EventStatus:
-            self.eventStatus = eventStatus
+        self.grid_cell = grid_cell
+        self.event_time = event_time
+        if type(event_status) == EventStatus:
+            self.event_status = event_status
         else:
-            self.eventStatus = EventStatus(*eventStatus.values())
+            self.event_status = EventStatus(*event_status.values())
 
     def __repr__(self):
-        return "Event{" + "\nId : " + str(self.id) + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.eventStatus) + "}\n"
+        return "\nEvent{" + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.event_status) + "\n}"
 
     def __str__(self):
-        return "Event{" + "\nId : " + str(self.id) + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.eventStatus) + "}\n"
+        return "\nEvent{" + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.event_status) + "\n}"
 
 
 class AdoptionStatus:
-    def __init__(self, id, code, description):
-        self.id = id
+    def __init__(self, code, description):
         self.code = code
         self.description = description
 
     def __repr__(self):
-        return "AdoptionStatus{" + "\nId : " + str(self.id) + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "}\n"
+        return "\nAdoptionStatus{" + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "\n}"
 
     def __str__(self):
-        return "AdoptionStatus{" + "\nId : " + str(self.id) + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "}\n"
+        return "\nAdoptionStatus{" + "\nCode : " + str(self.code) + "\nDescription : " + str(self.description) + "\n}"
 
 
 class Adoptee:
-    def __init__(self, id, petType, x, y, imageBeforeURL, imageAfterURL, adoptionStatus):
-        self.id = id
-        if type(petType) == PetType:
-            self.petType = petType
+    def __init__(self, pet_type, x, y, image_before_url, image_after_url, adoption_status):
+        if type(pet_type) == PetType:
+            self.pet_type = pet_type
         else:
-            self.petType = PetType(*petType.values())
+            self.pet_type = PetType(*pet_type.values())
         self.x = x
         self.y = y
-        self.imageBeforeURL = imageBeforeURL
-        self.imageAfterURL = imageAfterURL
-        if type(adoptionStatus) == AdoptionStatus:
-            self.adoptionStatus = adoptionStatus
+        self.image_before_url = image_before_url
+        self.image_after_url = image_after_url
+        if type(adoption_status) == AdoptionStatus:
+            self.adoption_status = adoption_status
         else:
-            self.adoptionStatus = AdoptionStatus(*adoptionStatus.values())
+            self.adoption_status = AdoptionStatus(*adoption_status.values())
+
+    def for_mutation(self):
+        return self.pet_type.code, self.x, self.y, self.image_before_url, self.image_after_url, self.adoption_status.code
 
     def __repr__(self):
-        return "Adoptee{" + "\nId : " + str(self.id) + "\nPet Type : " + str(self.petType) + "\nAdoption Status : " + str(self.adoptionStatus) + "}\n"
+        return "\nAdoptee{" + "\nPet Type : " + str(self.pet_type) + "\nAdoption Status : " + str(self.adoption_status) + "\n}"
 
     def __str__(self):
-        return "Adoptee{" + "\nId : " + str(self.id) + "\nPet Type : " + str(self.petType) + "\nAdoption Status : " + str(self.adoptionStatus) + "}\n"
+        return "\nAdoptee{" + "\nPet Type : " + str(self.pet_type) + "\nAdoption Status : " + str(self.adoption_status) + "\n}"
 
 
 class AiStatus:
@@ -195,14 +198,16 @@ class AiStatus:
         self.bda_AI = bda_AI
 
     def __repr__(self):
-        return "AiStatus{" + "\ndrone_AI : " + str(self.drone_AI) + "\npets_AI : " + str(self.pets_AI) + "\nadoption_AI : " + str(self.adoption_AI) + "\nbda_AI : " + str(self.bda_AI) + "}\n"
+        return "\nAiStatus{" + "\ndrone_AI : " + str(self.drone_AI) + "\npets_AI : " + str(self.pets_AI) + "\nadoption_AI : " + str(self.adoption_AI) + "\nbda_AI : " + str(self.bda_AI) + "\n}"
 
     def __str__(self):
-        return "AiStatus{" + "\ndrone_AI : " + str(self.drone_AI) + "\npets_AI : " + str(self.pets_AI) + "\nadoption_AI : " + str(self.adoption_AI) + "\nbda_AI : " + str(self.bda_AI) + "}\n"
+        return "\nAiStatus{" + "\ndrone_AI : " + str(self.drone_AI) + "\npets_AI : " + str(self.pets_AI) + "\nadoption_AI : " + str(self.adoption_AI) + "\nbda_AI : " + str(self.bda_AI) + "\n}"
 
 
 class Plot:
-    def __init__(self, timestamp, x, y, z):
+    def __init__(self,cell_x, cell_y, timestamp, x, y, z):
+        self.cell_x = cell_x
+        self.cell_y = cell_y
         self.timestamp = timestamp
         self.x = x
         self.y = y
@@ -211,11 +216,14 @@ class Plot:
     def to_tuple(self):
         return self.timestamp, self.x, self.y, self.z
 
+    def for_mutation(self):
+        return self.cell_x, self.cell_y, self.timestamp, self.x, self.y, self.z
+
     def __repr__(self):
-        return "Plot{" + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
+        return "\nPlot{" + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "\n}"
 
     def __str__(self):
-        return "Plot{" + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "}\n"
+        return "\nPlot{" + "\nTime : " + str(self.timestamp) + "\nx : " + str(self.x) + "\ny : " + str(self.y) + "\nz : " + str(self.z) + "\n}"
 
 
 class Heatmap:
@@ -235,9 +243,9 @@ class Heatmap:
                     parrot=self.parrot_percentage)
 
     def __repr__(self):
-        return "Heatmap{" + "\nDog : " + str(self.dog_percentage) + "\nCat : " + str(self.cat_percentage) + "\nRabbit : " + str(self.rabbit_percentage) + "\nParrot : " + str(self.parrot_percentage) + "}\n"
+        return "\nHeatmap{" + "\nDog : " + str(self.dog_percentage) + "\nCat : " + str(self.cat_percentage) + "\nRabbit : " + str(self.rabbit_percentage) + "\nParrot : " + str(self.parrot_percentage) + "\n}"
 
     def __str__(self):
-        return "Heatmap{" + "\nDog : " + str(self.dog_percentage) + "\nCat : " + str(self.cat_percentage) + "\nRabbit : " + str(self.rabbit_percentage) + "\nParrot : " + str(self.parrot_percentage) + "}\n"
+        return "\nHeatmap{" + "\nDog : " + str(self.dog_percentage) + "\nCat : " + str(self.cat_percentage) + "\nRabbit : " + str(self.rabbit_percentage) + "\nParrot : " + str(self.parrot_percentage) + "\n}"
 
 
