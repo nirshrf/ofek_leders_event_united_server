@@ -129,7 +129,8 @@ class GraphQlMutation:
 
     def create_event(self, drone_id, drone_x, drone_y):
         drone_properties = (drone_id, drone_x, drone_y)
-        requests.post(self.url, json={"query": "mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '}'}).json()
+        requests.post(self.url, json={"query": "mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '{id}}'}).json()
+        print("mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '{id}}')
         return None
 
     def set_history(self, history):

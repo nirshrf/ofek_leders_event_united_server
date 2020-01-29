@@ -5,7 +5,7 @@ from generations.conversions import from_entity_parser
 from team2_ai_solution.team2_ai_solution import compute_features_df
 from Data.app_properties import JAVA_server_url, confusion_matrix
 from team3_solution.team3_solution import send_adopters
-
+import time
 
 def match_adopters():
     graph = GraphQLRequests(JAVA_server_url)
@@ -20,17 +20,18 @@ def match_adopters():
 
 
 def execute_drones():
-    events = []
-    graph_query_handler = GraphQLRequests(JAVA_server_url)
-    graph_mutation_handler = GraphQlMutation(JAVA_server_url)
-    adopters = graph_query_handler.import_adopters()
-    adopters_as_dictionary = from_entity_parser.adopters_dictionary(adopters)
-    drones = graph_query_handler.import_quads()
-    free_drones, busy_drones = from_entity_parser.free_drones(drones), from_entity_parser.busy_drones(drones)
-    drones_to_send = send_drones(generate_heat_map(), adopters_as_dictionary, free_drones, busy_drones, 1, 1)
-    for drone in drones_to_send.items():
-        events.append(graph_mutation_handler.create_event(int(drone[0]), drone[1][0], drone[1][1]))
-    print(events)
+    for i in range(5):
+        events = []
+        graph_query_handler = GraphQLRequests(JAVA_server_url)
+        graph_mutation_handler = GraphQlMutation(JAVA_server_url)
+        adopters = graph_query_handler.import_adopters()
+        adopters_as_dictionary = from_entity_parser.adopters_dictionary(adopters)
+        drones = graph_query_handler.import_quads()
+        free_drones, busy_drones = from_entity_parser.free_drones(drones), from_entity_parser.busy_drones(drones)
+        drones_to_send = send_drones(generate_heat_map(), adopters_as_dictionary, free_drones, busy_drones, 1, 1)
+        for drone in drones_to_send.items():
+            events.append(graph_mutation_handler.create_event(int(drone[0]), drone[1][0], drone[1][1]))
+        time.sleep(10)
 
 ##############################################################################
 ########     when you want to classify an animal using it's graph  ###########

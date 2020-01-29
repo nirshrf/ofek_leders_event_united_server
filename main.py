@@ -23,7 +23,7 @@ class ServerHandler(SimpleHTTPRequestHandler):
         self._set_headers()
         content_len = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_len)
-        print(post_body)
+        print(self.path[1:], post_body)
         if self.path[1:] == "generate_data":
             print("Generating Data...")
             #generate_all_data()
