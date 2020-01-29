@@ -1,6 +1,7 @@
 from graphql_handler.graphqlHandler import GraphQLRequests, GraphQlMutation
 from generations.generateHeatmap import generate_heat_map
 from team1_solution import send_drones
+from team1_solution.team1_ai_school_solution import send_drones as send_drones_school
 from generations.conversions import from_entity_parser
 from team2_ai_solution.team2_ai_solution import compute_features_df
 from Data.app_properties import JAVA_server_url, confusion_matrix
@@ -28,7 +29,7 @@ def execute_drones():
         adopters_as_dictionary = from_entity_parser.adopters_dictionary(adopters)
         drones = graph_query_handler.import_quads()
         free_drones, busy_drones = from_entity_parser.free_drones(drones), from_entity_parser.busy_drones(drones)
-        drones_to_send = send_drones(generate_heat_map(), adopters_as_dictionary, free_drones, busy_drones, 1, 1)
+        drones_to_send = send_drones_school(generate_heat_map(), adopters_as_dictionary, free_drones, busy_drones, 1, 1)
         for drone in drones_to_send.items():
             events.append(graph_mutation_handler.create_event(int(drone[0]), drone[1][0], drone[1][1]))
         time.sleep(10)
@@ -56,3 +57,10 @@ def classify_animal_from_grid_cell(x, y, model):
     plots_as_list = [tuple([plot.timestamp, plot.x, plot.y, plot.z]) for plot in plots_as_entities]
     plots_as_list.sort(key=lambda tup: tup[0])
     return classify_animal([plots_as_list], model)[0]
+
+def classify_animals_from_events(model):
+    graph_handler = GraphQLRequests(JAVA_server_url)
+    events = graph_handler.import_events(True)
+    for event in events:
+        print(event)
+        classify_animal_from_grid_cell(event.grid_cell.x, event.grid_cell.y, model)
