@@ -139,7 +139,7 @@ class Event:
             self.quadcopter = quadcopter
         else:
             self.quadcopter = Quadcopter(*quadcopter.values())
-        self.grid_cell = grid_cell
+        self.grid_cell = GridCell([*grid_cell.values()])
         self.event_time = event_time
         if type(event_status) == EventStatus:
             self.event_status = event_status
@@ -147,10 +147,10 @@ class Event:
             self.event_status = EventStatus(*event_status.values())
 
     def __repr__(self):
-        return "\nEvent{" + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.event_status) + "\n}"
+        return "\nEvent{" + str(self.quadcopter) + str(self.event_status)  + str(self.grid_cell) +"\n}"
 
     def __str__(self):
-        return "\nEvent{" + "\nQuadcopter : " + str(self.quadcopter) + "\nEvent Status : " + str(self.event_status) + "\n}"
+        return "\nEvent{" + str(self.quadcopter) + str(self.event_status)  + str(self.grid_cell) +"\n}"
 
 
 class AdoptionStatus:
