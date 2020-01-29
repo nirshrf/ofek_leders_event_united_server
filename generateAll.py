@@ -4,11 +4,10 @@ from generations.conversions import to_entity_parser, from_entity_parser
 from graphql_handler.graphqlHandler import GraphQLRequests, GraphQlMutation
 from generations.generate_grid_cell import generate_grid_cell
 import timeit as time
+from Data.app_properties import JAVA_server_url
 
 
 def generate_all_data():
-    global JAVA_server_url
-    graph_query_handler = GraphQLRequests(JAVA_server_url)
     graph_mutation_handler = GraphQlMutation(JAVA_server_url)
     heat_map = to_entity_parser.heatmap(generate_heat_map())
     h_map = from_entity_parser.heatmap(heat_map)

@@ -69,7 +69,7 @@ class ParseFromEntities:
         adopters_dictionary = {}
         for adopter in adopters_as_entities:
             if adopter.secondpreferred is None:
-                adopters_dictionary[adopter.name] = ["None"]
+                adopters_dictionary[adopter.name] = [adopter.preferred.description]
             else:
                 adopters_dictionary[adopter.name] = [adopter.preferred.description, adopter.secondpreferred.description]
         return adopters_dictionary

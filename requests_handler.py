@@ -3,8 +3,20 @@ from generations.generateHeatmap import generate_heat_map
 from team1_solution import send_drones
 from generations.conversions import from_entity_parser
 from team2_ai_solution.team2_ai_solution import compute_features_df
-from Data.app_properties import JAVA_server_url
-from model import *
+from Data.app_properties import JAVA_server_url, confusion_matrix
+from team3_solution.team3_solution import send_adopters
+
+
+def match_adopters():
+    graph = GraphQLRequests(JAVA_server_url)
+    mutate = GraphQlMutation(JAVA_server_url)
+    adopters = from_entity_parser.adopters_dictionary(graph.import_adopters())
+    adoptees = {}
+    for adoptee in graph.import_adoptees(2):
+        adoptees[(adoptee.x, adoptee.y)] = adoptee.pet_type.description
+    matched_adoptees = send_adopters(adopters, adoptees, confusion_matrix)
+    for match in list(matched_adoptees.items()):
+        mutate.adopt(match[0], match[1][0], match[1][1])
 
 
 def execute_drones():
@@ -25,7 +37,7 @@ def execute_drones():
 ##############################################################################
 
 
-def classify_animal(plots):
+def classify_animal(plots, model):
     '''
     plots - > [(ts_1,x_1,y_1,z_1),.....,(ts_n,x_n,y_n,z_n)]
     0<=n<60
@@ -37,9 +49,9 @@ def classify_animal(plots):
     return model_predictions
 
 
-def classify_animal_from_grid_cell(x, y):
+def classify_animal_from_grid_cell(x, y, model):
     graph_handler = GraphQLRequests(JAVA_server_url)
     plots_as_entities = graph_handler.import_gridcell_plots(x, y)
     plots_as_list = [tuple([plot.timestamp, plot.x, plot.y, plot.z]) for plot in plots_as_entities]
     plots_as_list.sort(key=lambda tup: tup[0])
-    return classify_animal([plots_as_list])[0]
+    return classify_animal([plots_as_list], model)[0]
