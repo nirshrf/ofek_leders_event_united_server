@@ -1,4 +1,6 @@
 import random
+
+
 def generate_adopter_request():
     """
     the function will generate a request for adopter, i.e. an animal list of size between 1 and 2.

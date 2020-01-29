@@ -129,7 +129,8 @@ class GraphQlMutation:
 
     def create_event(self, drone_id, drone_x, drone_y):
         drone_properties = (drone_id, drone_x, drone_y)
-        requests.post(self.url, json={"query": "mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '}'}).json()
+        requests.post(self.url, json={"query": "mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '{id}}'}).json()
+        print("mutation createEvent "+'{createEvent(quadId: %d,x: %d,y: %d)' % drone_properties + '{id}}')
         return None
 
     def set_history(self, history):
@@ -196,5 +197,9 @@ class GraphQlMutation:
 
     def set_quads(self, quads):
         for quad in quads:
-            data = requests.post(self.url, json={"query": "mutation setQuadcopter "+'{setQuadcopter(x: %d, y: %d, isfree: %s)}' % (quad.x, quad.y, quad.isfree)}).json()
+            requests.post(self.url, json={"query": "mutation setQuadcopter "+'{setQuadcopter(name: \"%s\", x: %d, y: %d)}' % (quad.name, quad.x, quad.y)}).json()
+        return None
+
+    def adopt(self, adopterId, adopteeX, adopteeY):
+        requests.post(self.url, json={"query": "mutation adopt " + '{adopt(adopterId: %s, adopteeX: %d, adopteeY: %d)}' % (adopterId, adopteeX, adopteeY)}).json()
         return None
