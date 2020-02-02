@@ -5,6 +5,9 @@ from generateAll import generate_all_data
 from generations.generateQuacopters import generate_quadcopters
 import json
 from Data.app_properties import model
+from flask import Flask, request
+
+app = Flask(__name__)
 
 
 def parse_x_y_from_body(post_body):
@@ -30,25 +33,15 @@ class ServerHandler(SimpleHTTPRequestHandler):
         content_len = int(self.headers['Content-Length'])
         post_body = self.rfile.read(content_len)
         print(self.path[1:], post_body)
-        if self.path[1:] == "send_drones":
-            print("Sending Drones...")
-            execute_drones()
-            print("Drones sent!")
-        elif self.path[1:] == "generate_drones":
+        if self.path[1:] == "generate_drones":
             drones_amount = parse_drones_amount_from_body(post_body)
             print("generating %d drones.." % drones_amount)
             generate_quadcopters(parse_drones_amount_from_body(drones_amount))
-        elif self.path[1:] == "classify_animals":
-            classify_animals_from_events(model)
         elif self.path[1:] == "classify_animal":
             print("classify animal")
             x, y = parse_x_y_from_body(post_body)
             animal = classify_animal_from_grid_cell(x, y, model)
             self.wfile.write(animal.encode('utf-8'))
-        elif self.path[1:] == "adopt":
-            print("Beginning to match adoptees to adopters")
-            match_adopters()
-            print("matched!")
         self.end_headers()
         return
 
@@ -59,10 +52,43 @@ def run_server(path, port, handler=ServerHandler):
     httpd.serve_forever()
 
 
-if __name__ == '__main__':
-#   test
-#   print(graphqlrequests.import_gridcell(1, 1))
-#   end test
-    run_server("", 8080, ServerHandler)
+@app.route('/')
+def hello():
+    if request.method == 'GET':
+        return "Hello _GET"
+    elif request.method == 'POST':
+        return "Hello _POST"
+    else:
+        return None
 
+
+@app.route('/send_drones')
+def send_quadcopters():
+    if request.method == 'POST':
+        print("Sending Drones...")
+        execute_drones()
+        return "Drones sent!"
+    return "In order to deploy the drones send a POST request to this endpoint"
+
+
+@app.route('/close_events')
+def close_events():
+    if request.method == 'POST':
+        classify_animals_from_events(model)
+        return "closed events!"
+    return "In order to close the events send a POST request to this endpoint"
+
+
+@app.route('/match_animals')
+def match_animals():
+    if request.method == 'POST':
+        print("Beginning to match adoptees to adopters")
+        match_adopters()
+        return "matched adopters!"
+    return "In order to match the animals send a POST request to this endpoint"
+
+
+if __name__ == '__main__':
+    #run_server("", 8080, ServerHandler)
+    app.run()
 
