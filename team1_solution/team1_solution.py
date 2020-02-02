@@ -6,6 +6,7 @@ import copy
 ############################# CONSTANTS #####################################
 #############################################################################
 
+
 def send_drones(heat_map, adopters_requests, free_drones_locations, busy_drones_destinations,
                 take_picture_penalty, send_drone_penalty):
     """
