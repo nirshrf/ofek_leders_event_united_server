@@ -79,5 +79,5 @@ if __name__ == '__main__':
     print("creating adopters")
     threads['adopter_creator'].start()
     print("starting app")
-    app.run()
+    app.run('0.0.0.0')
 
