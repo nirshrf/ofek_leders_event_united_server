@@ -1,58 +1,23 @@
-from http.server import SimpleHTTPRequestHandler
-import socketserver
-from requests_handler import execute_drones, match_adopters, classify_animal_from_grid_cell, classify_animals_from_events
-from generateAll import generate_all_data
-from generations.generateQuacopters import generate_quadcopters
-import json
-from Data.app_properties import model
+from requests_handler import execute_drones, match_adopters, classify_animals_from_events, create_adopter
+from Data.app_properties import model, thread_flags
 from flask import Flask, request
+import threading
+
+
+drones_executor = threading.Thread(target=execute_drones, daemon=True)
+classifier = threading.Thread(target=classify_animals_from_events, args=(model,), daemon=True)
+match_maker = threading.Thread(target=match_adopters, daemon=True)
+adopter_creator = threading.Thread(target=create_adopter, daemon=True)
+
+threads = dict(drones_executor=drones_executor,
+               classifier=classifier,
+               match_maker=match_maker,
+               adopter_creator=adopter_creator)
 
 app = Flask(__name__)
 
 
-def parse_x_y_from_body(post_body):
-    json_as_string = str(post_body)[2:-1]
-    json_as_dict = json.loads(json_as_string)
-    return json_as_dict['x'], json_as_dict['y']
-
-
-def parse_drones_amount_from_body(post_body):
-    json_as_string = str(post_body)[2:-1]
-    json_as_dict = json.loads(json_as_string)
-    return json_as_dict['amount']
-
-
-class ServerHandler(SimpleHTTPRequestHandler):
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html/json')
-        self.end_headers()
-
-    def do_POST(self):
-        self._set_headers()
-        content_len = int(self.headers['Content-Length'])
-        post_body = self.rfile.read(content_len)
-        print(self.path[1:], post_body)
-        if self.path[1:] == "generate_drones":
-            drones_amount = parse_drones_amount_from_body(post_body)
-            print("generating %d drones.." % drones_amount)
-            generate_quadcopters(parse_drones_amount_from_body(drones_amount))
-        elif self.path[1:] == "classify_animal":
-            print("classify animal")
-            x, y = parse_x_y_from_body(post_body)
-            animal = classify_animal_from_grid_cell(x, y, model)
-            self.wfile.write(animal.encode('utf-8'))
-        self.end_headers()
-        return
-
-
-def run_server(path, port, handler=ServerHandler):
-    httpd = socketserver.TCPServer((path, port), handler)
-    print("serving at port", port)
-    httpd.serve_forever()
-
-
-@app.route('/')
+@app.route('/', methods=['POST', 'GET'])
 def hello():
     if request.method == 'GET':
         return "Hello _GET"
@@ -62,33 +27,57 @@ def hello():
         return None
 
 
-@app.route('/send_drones')
+@app.route('/send_drones', methods=['POST', 'GET'])
 def send_quadcopters():
     if request.method == 'POST':
-        print("Sending Drones...")
-        execute_drones()
-        return "Drones sent!"
+        thread = threads['drones_executor']
+        if thread.is_alive():
+            thread_flags['drones_executor_flag'] = False
+            print("finished Drones...")
+            thread.join()
+        else:
+            thread_flags['drones_executor_flag'] = True
+            print("Sending Drones...")
+            thread.start()
+        return "Drones are sent!"
     return "In order to deploy the drones send a POST request to this endpoint"
 
 
-@app.route('/close_events')
+@app.route('/close_events', methods=['POST', 'GET'])
 def close_events():
     if request.method == 'POST':
-        classify_animals_from_events(model)
+        thread = threads['classifier']
+        if thread.is_alive():
+            thread_flags['classifier_flag'] = False
+            print("finished closing events...")
+            thread.join()
+        else:
+            thread_flags['classifier_flag'] = True
+            print("closing events...")
+            thread.start()
         return "closed events!"
     return "In order to close the events send a POST request to this endpoint"
 
 
-@app.route('/match_animals')
+@app.route('/match_animals', methods=['POST', 'GET'])
 def match_animals():
     if request.method == 'POST':
-        print("Beginning to match adoptees to adopters")
-        match_adopters()
+        thread = threads['match_maker']
+        if thread.is_alive():
+            thread_flags['match_maker_flag'] = False
+            print("finished to match adoptees to adopters")
+            thread.join()
+        else:
+            thread_flags['match_maker_flag'] = True
+            print("Beginning to match adoptees to adopters")
+            thread.start()
         return "matched adopters!"
     return "In order to match the animals send a POST request to this endpoint"
 
 
 if __name__ == '__main__':
-    #run_server("", 8080, ServerHandler)
+    print("creating adopters")
+    threads['adopter_creator'].start()
+    print("starting app")
     app.run()
 
