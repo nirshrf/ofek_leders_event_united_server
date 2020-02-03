@@ -153,15 +153,9 @@ class GraphQlMutation:
 
     def set_adopter(self, adopter):
         if adopter.secondpreferred is None:
-            #data = requests.post(self.url, json={"query": "mutation setAdopters "+'{setAdopters(name: \"%s\",preferredCode: %d,isValid: %s)' % adopter.for_mutation() +'}'}).json()
-            F = open("adop.txt", "a")
-            F.write("mutation setAdopters "+'{setAdopters(name: \"%s\",preferredCode: %d,isValid: %s)' % adopter.for_mutation() +'}\r')
-            F.close()
+            requests.post(self.url, json={"query": "mutation setAdopters "+'{setAdopters(name: \"%s\",preferredCode: %d,isValid: %s)' % adopter.for_mutation() +'}'}).json()
         else:
-            #data = requests.post(self.url, json={"query": "mutation setAdopters "+'{setAdopters(name: \"%s\", preferredCode: %d, secondPreferredCode: %d, isValid: %s)' % adopter.for_mutation() +'}'}).json()
-            F = open("adop.txt", "a")
-            F.write("mutation setAdopters "+'{setAdopters(name: \"%s\", preferredCode: %d, secondPreferredCode: %d, isValid: %s)' % adopter.for_mutation() +'}\r')
-            F.close()
+            requests.post(self.url, json={"query": "mutation setAdopters "+'{setAdopters(name: \"%s\", preferredCode: %d, secondPreferredCode: %d, isValid: %s)' % adopter.for_mutation() +'}'}).json()
         return None
 
     def set_adopters(self, adopters):
@@ -202,4 +196,8 @@ class GraphQlMutation:
 
     def adopt(self, adopterId, adopteeX, adopteeY):
         requests.post(self.url, json={"query": "mutation adopt " + '{adopt(adopterId: %s, adopteeX: %d, adopteeY: %d)}' % (adopterId, adopteeX, adopteeY)}).json()
+        return None
+
+    def close_event(self, event_id, pet_type_code):
+        requests.post(self.url, json={"query": "mutation closeEvent " + '{closeEvent(eventId: %s, petTypeCode: %d)}' % (event_id, pet_type_code)}).json()
         return None

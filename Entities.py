@@ -134,7 +134,8 @@ class EventStatus:
 
 
 class Event:
-    def __init__(self, quadcopter, grid_cell, event_time, event_status):
+    def __init__(self, id, quadcopter, grid_cell, event_time, event_status):
+        self.id = id
         if type(quadcopter) == Quadcopter:
             self.quadcopter = quadcopter
         else:
