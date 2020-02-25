@@ -4,7 +4,7 @@ from generations.generateHeatmap import generate_heat_map
 
 model = generate_model()
 confusion_matrix = compute_confusion_matrix(model)
-JAVA_server_url = 'http://cto.southcentralus.cloudapp.azure.com:9000/graphql'
+JAVA_server_url = 'https://adoptionserver-1580505813958.azurewebsites.net/graphql'
 grid_distribution = generate_heat_map()
 thread_flags = dict(drones_executor_flag=False,
                     classifier_flag=False,

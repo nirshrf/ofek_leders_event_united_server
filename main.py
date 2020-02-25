@@ -36,6 +36,8 @@ def send_quadcopters():
             print("finished Drones...")
             thread.join()
         else:
+            thread = threading.Thread(target=execute_drones, daemon=True)
+            threads['drones_executor'] = thread
             thread_flags['drones_executor_flag'] = True
             print("Sending Drones...")
             thread.start()
@@ -52,6 +54,8 @@ def close_events():
             print("finished closing events...")
             thread.join()
         else:
+            thread = threading.Thread(target=classify_animals_from_events, args=(model,), daemon=True)
+            threads['classifier'] = thread
             thread_flags['classifier_flag'] = True
             print("closing events...")
             thread.start()
@@ -68,6 +72,8 @@ def match_animals():
             print("finished to match adoptees to adopters")
             thread.join()
         else:
+            thread = threading.Thread(target=match_adopters, daemon=True)
+            threads['match_maker'] = thread
             thread_flags['match_maker_flag'] = True
             print("Beginning to match adoptees to adopters")
             thread.start()
@@ -79,5 +85,5 @@ if __name__ == '__main__':
     print("creating adopters")
     threads['adopter_creator'].start()
     print("starting app")
-    app.run('0.0.0.0')
+    app.run()
 

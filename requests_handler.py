@@ -18,9 +18,13 @@ def match_adopters():
         adopters = from_entity_parser.adopters_dictionary(query.import_adopters())
         adoptees = {}
         for adoptee in query.import_adoptees(2):
+            if not thread_flags['match_maker_flag']:
+                break
             adoptees[(adoptee.x, adoptee.y)] = adoptee.pet_type.description
         matched_adoptees = send_adopters(adopters, adoptees, confusion_matrix)
         for match in list(matched_adoptees.items()):
+            if not thread_flags['match_maker_flag']:
+                break
             mutate.adopt(match[0], match[1][0], match[1][1])
         time.sleep(1)
 
@@ -34,8 +38,10 @@ def execute_drones():
         adopters_as_dictionary = from_entity_parser.adopters_dictionary(adopters)
         drones = graph_query_handler.import_quads()
         free_drones, busy_drones = from_entity_parser.free_drones(drones), from_entity_parser.busy_drones(drones)
-        drones_to_send = send_drones(grid_distribution, adopters_as_dictionary, free_drones, busy_drones, 1, 1)
+        drones_to_send = send_drones(grid_distribution, adopters_as_dictionary, free_drones, busy_drones, take_picture_penalty=1, send_drone_penalty=1)
         for drone in drones_to_send.items():
+            if not thread_flags['drones_executor_flag']:
+                break
             x, y = drone[1]
             id = drone[0]
             events.append(graph_mutation_handler.create_event(int(id), x, y))
