@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9f8b0486-36a7-4947-a76d-cf37ece529d1" name="Default" comment="changed app url">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/app_properties.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/app_properties.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requests_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/requests_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generateAll.py" beforeDir="false" afterPath="$PROJECT_DIR$/generateAll.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

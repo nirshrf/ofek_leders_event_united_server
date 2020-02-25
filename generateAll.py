@@ -1,7 +1,7 @@
 from generations.generateHeatmap import generate_heat_map
 from generations.generateAdopters import generate_adopters
 from generations.conversions import to_entity_parser, from_entity_parser
-from graphql_handler.graphqlHandler import GraphQLRequests, GraphQlMutation
+from graphql_handler.graphqlHandler import GraphQlMutation
 from generations.generate_grid_cell import generate_grid_cell
 import timeit as time
 from Data.app_properties import JAVA_server_url

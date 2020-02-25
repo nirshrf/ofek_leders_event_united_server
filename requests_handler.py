@@ -1,6 +1,5 @@
 from graphql_handler.graphqlHandler import GraphQLRequests, GraphQlMutation
 from team1_solution import send_drones
-from team1_solution.team1_ai_school_solution import send_drones as send_drones_school
 from generations.conversions import from_entity_parser
 from generations.generateAdopters import generate_adopters
 from team2_ai_solution.team2_ai_solution import compute_features_df

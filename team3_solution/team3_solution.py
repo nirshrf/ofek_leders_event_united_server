@@ -167,9 +167,6 @@ def find_most_peaky_adopter_that_wants_animal(adopters_requests, animal):
 # In[2]:
 
 
-import pandas as pd
-
-
 def compute_animals_prob_based_on_prediction(confusion_matrix, prediction):
     """
     input:
